@@ -1,0 +1,237 @@
+/* ============================================
+   BIBLIOTHÈQUE NUMÉRIQUE — ANIMATIONS CSS
+   Keyframes, Scroll Reveals, Micro-interactions
+   ============================================ */
+
+/* ── Keyframes ─────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes float {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes pulse-blue {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.25); }
+  50%       { box-shadow: 0 0 0 8px rgba(37, 99, 235, 0); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ── Scroll Reveal Base ────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.94);
+  transition: opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal-scale.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Stagger delays */
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.15s; }
+.delay-3 { transition-delay: 0.2s; }
+.delay-4 { transition-delay: 0.25s; }
+.delay-5 { transition-delay: 0.3s; }
+.delay-6 { transition-delay: 0.35s; }
+.delay-7 { transition-delay: 0.4s; }
+.delay-8 { transition-delay: 0.45s; }
+
+/* ── Hero Animations ───────────────────────── */
+.hero-animate-badge {
+  animation: fadeIn 0.6s ease both;
+  animation-delay: 0.1s;
+}
+
+.hero-animate-title {
+  animation: fadeInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation-delay: 0.2s;
+}
+
+.hero-animate-sub {
+  animation: fadeInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation-delay: 0.35s;
+}
+
+.hero-animate-cta {
+  animation: fadeInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation-delay: 0.45s;
+}
+
+.hero-animate-proof {
+  animation: fadeInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation-delay: 0.55s;
+}
+
+.hero-animate-visual {
+  animation: scaleIn 0.9s cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation-delay: 0.3s;
+}
+
+/* ── Floating Effect ───────────────────────── */
+.float {
+  animation: float 5s ease-in-out infinite;
+}
+
+.float-slow {
+  animation: float 7s ease-in-out infinite;
+}
+
+.float-delayed {
+  animation: float 5s ease-in-out infinite;
+  animation-delay: -2.5s;
+}
+
+/* ── Gradient Text ─────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, var(--blue-primary) 0%, #3B82F6 50%, var(--blue-secondary) 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 4s ease infinite;
+}
+
+/* ── Skeleton Loading ──────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-light) 50%, var(--bg-subtle) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-md);
+}
+
+/* ── Number Counter ────────────────────────── */
+.count-up {
+  animation: countUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* ── Micro-interactions ────────────────────── */
+.hover-lift {
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.hover-scale {
+  transition: transform var(--transition-base);
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+/* ── Focus Ring ────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--blue-primary);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ── Page Load ─────────────────────────────── */
+.page-enter {
+  animation: fadeIn 0.4s ease both;
+}
+
+/* ── Pulse for CTA ─────────────────────────── */
+.btn-pulse {
+  animation: pulse-blue 2.5s infinite;
+}
+
+/* ── Reduced Motion Override ───────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal-left, .reveal-right, .reveal-scale {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .float, .float-slow, .float-delayed,
+  .hero-animate-badge, .hero-animate-title,
+  .hero-animate-sub, .hero-animate-cta,
+  .hero-animate-proof, .hero-animate-visual,
+  .gradient-text, .skeleton, .btn-pulse,
+  .count-up {
+    animation: none !important;
+  }
+}
