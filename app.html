@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ma Bibliothèque — Nouvora Labs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <style>
+    :root {
+      --sidebar-w: 260px;
+    }
+
+    body { background: #F0F4FA; }
+
+    /* ══ Formations grid inside cards ════════ */
+    .lib-count-badge {
+      font-size: 0.6875rem; font-weight: 800; padding: 3px 10px;
+      border-radius: 20px; background: var(--blue-primary); color: white;
+      letter-spacing: 0.02em; white-space: nowrap;
+    }
+    .lib-formations-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 5px 10px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin: 2px 0;
+    }
+    .lib-formation-item {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 0.8125rem; font-weight: 500; color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .lib-formation-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--blue-primary); flex-shrink: 0;
+    }
+    .lib-formation-more {
+      color: var(--text-tertiary); font-style: italic;
+      font-size: 0.75rem; grid-column: 1 / -1;
+      padding-top: 4px; border-top: 1px solid var(--border-light);
+      margin-top: 4px;
+    }
+
+    /* ══ Premium Library Header ══════════════ */
+    .lib-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 0 28px 0;
+      border-bottom: 1px solid var(--border-light);
+      margin-bottom: 28px;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .lib-header-left { display: flex; align-items: center; gap: 14px; }
+    .lib-header-icon {
+      width: 44px; height: 44px; background: var(--blue-primary);
+      border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .lib-header-icon svg { width: 22px; height: 22px; color: white; }
+    .lib-header-title {
+      font-size: 1.375rem; font-weight: 800; color: var(--text-primary);
+      letter-spacing: -0.03em; line-height: 1;
+    }
+    .lib-header-sub {
+      font-size: 0.8125rem; color: var(--text-tertiary); font-weight: 500;
+      margin-top: 3px; letter-spacing: 0.03em;
+    }
+    .lib-header-stats { display: flex; align-items: center; gap: 20px; }
+    .lib-header-stat { text-align: center; }
+    .lib-header-stat-num {
+      display: block; font-size: 1.375rem; font-weight: 800;
+      color: var(--text-primary); letter-spacing: -0.03em; line-height: 1;
+    }
+    .lib-header-stat-label {
+      font-size: 0.6875rem; font-weight: 600; color: var(--text-tertiary);
+      text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; display: block;
+    }
+    .lib-header-divider { width: 1px; height: 32px; background: var(--border-light); }
+
+    /* ══ Ancien welcome-banner — désactivé ══ */
+    .welcome-banner { display: none; }
+
+    /* ══════════════════════════════════════
+       LAYOUT
+    ══════════════════════════════════════ */
+    .app-layout { display: flex; min-height: 100vh; }
+
+    /* ══════════════════════════════════════
+       SIDEBAR
+    ══════════════════════════════════════ */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--bg-dark);
+      position: fixed; top:0; left:0; bottom:0;
+      overflow-y: auto; z-index: 100;
+      display: flex; flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 22px 20px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .sidebar-logo-icon {
+      width: 34px; height: 34px; background: var(--blue-primary);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .sidebar-logo-icon svg { width: 18px; height: 18px; color: white; }
+    .sidebar-logo-text {
+      font-size: 0.9375rem; font-weight: 800;
+      color: white; letter-spacing: -0.02em;
+    }
+    .sidebar-logo-text span { color: var(--blue-mid); }
+
+    .sidebar-nav { padding: 20px 12px; flex: 1; }
+
+    .sidebar-section-label {
+      font-size: 0.625rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(255,255,255,0.25);
+      padding: 4px 8px; margin-bottom: 6px; margin-top: 22px;
+    }
+    .sidebar-section-label:first-child { margin-top: 0; }
+
+    .sidebar-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 10px; border-radius: 8px;
+      font-size: 0.875rem; font-weight: 500;
+      color: rgba(255,255,255,0.5);
+      transition: all 0.15s ease; text-decoration: none; margin-bottom: 2px;
+    }
+    .sidebar-link svg { width: 17px; height: 17px; flex-shrink: 0; }
+    .sidebar-link:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.9); }
+    .sidebar-link.active {
+      background: rgba(37,99,235,0.25); color: #93C5FD; font-weight: 600;
+    }
+
+    .sidebar-footer {
+      padding: 14px 12px 20px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .sidebar-user {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px; border-radius: 10px;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .sidebar-user:hover { background: rgba(255,255,255,0.06); }
+    .sidebar-user-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue-primary), #3B82F6);
+      color: white; display: flex; align-items: center; justify-content: center;
+      font-size: 0.8125rem; font-weight: 800; flex-shrink: 0;
+    }
+    .sidebar-user-name { font-size: 0.875rem; font-weight: 600; color: rgba(255,255,255,0.9); }
+    .sidebar-user-plan { font-size: 0.75rem; color: rgba(255,255,255,0.35); }
+
+    /* ══════════════════════════════════════
+       MAIN
+    ══════════════════════════════════════ */
+    .app-main { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; }
+
+    .app-topbar {
+      height: 56px; background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(226,232,240,0.8);
+      padding: 0 32px; display: flex; align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .app-topbar-left { display: flex; align-items: center; gap: 10px; }
+    .app-topbar-title { font-size: 0.9375rem; font-weight: 700; color: var(--text-primary); }
+    .app-topbar-sep { width: 1px; height: 16px; background: var(--border-light); }
+    .app-topbar-sub { font-size: 0.8125rem; color: var(--text-tertiary); }
+
+    /* ══════════════════════════════════════
+       CONTENT AREA
+    ══════════════════════════════════════ */
+    .app-content { padding: 36px 32px; max-width: 1120px; }
+
+    /* ══════════════════════════════════════
+       HERO WELCOME BANNER
+    ══════════════════════════════════════ */
+    .welcome-banner {
+      background: linear-gradient(130deg, #0F172A 0%, #1E3A8A 55%, #2563EB 100%);
+      border-radius: 20px; padding: 36px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 36px; position: relative; overflow: hidden;
+      box-shadow: 0 16px 48px rgba(15,23,42,0.2), 0 4px 12px rgba(37,99,235,0.15);
+    }
+    .welcome-banner::before {
+      content: '';
+      position: absolute; top: -60%; right: -5%; width: 55%; height: 220%;
+      background: radial-gradient(ellipse, rgba(255,255,255,0.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .welcome-banner::after {
+      content: '';
+      position: absolute; bottom: -30%; left: 30%; width: 40%; height: 160%;
+      background: radial-gradient(ellipse, rgba(99,179,237,0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .welcome-text { position: relative; z-index: 1; }
+    .welcome-greeting {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: rgba(255,255,255,0.55); margin-bottom: 8px;
+    }
+    .welcome-title {
+      font-size: 1.625rem; font-weight: 800; color: white;
+      letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 8px;
+    }
+    .welcome-sub { font-size: 0.9375rem; color: rgba(255,255,255,0.65); line-height: 1.5; }
+    .welcome-badge {
+      position: relative; z-index: 1; flex-shrink: 0;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 12px; padding: 16px 20px; text-align: center;
+    }
+    .welcome-badge-icon { font-size: 1.75rem; margin-bottom: 4px; }
+    .welcome-badge-label { font-size: 0.6875rem; font-weight: 700; color: rgba(255,255,255,0.6); letter-spacing: 0.06em; text-transform: uppercase; }
+    .welcome-badge-value { font-size: 1rem; font-weight: 800; color: white; }
+
+    /* ══════════════════════════════════════
+       SECTION TITLE ROW
+    ══════════════════════════════════════ */
+    .section-title-row {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .section-title-row h2 {
+      font-size: 1.0625rem; font-weight: 800;
+      color: var(--text-primary); letter-spacing: -0.02em;
+    }
+    .section-title-row p {
+      font-size: 0.8125rem; color: var(--text-tertiary); font-weight: 500;
+    }
+
+    /* ══════════════════════════════════════
+       LIBRARY CARDS — Correction 5 & 6
+       Palette unifiée, design premium
+    ══════════════════════════════════════ */
+    .libraries-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      margin-bottom: 36px;
+    }
+
+    .lib-card {
+      background: var(--bg-white);
+      border: 1px solid var(--border-light);
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: 0 2px 8px rgba(15,23,42,0.05), 0 1px 2px rgba(15,23,42,0.04);
+      transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+      display: flex; flex-direction: column; gap: 16px;
+      position: relative; overflow: hidden;
+      text-decoration: none;
+    }
+
+    /* Subtle top accent — même couleur pour toutes */
+    .lib-card::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--blue-primary), #60A5FA);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .lib-card:hover {
+      box-shadow: 0 16px 40px rgba(15,23,42,0.1), 0 4px 12px rgba(37,99,235,0.08);
+      transform: translateY(-3px);
+      border-color: rgba(37,99,235,0.2);
+    }
+    .lib-card:hover::after { opacity: 1; }
+
+    .lib-card-header {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+
+    /* Icône unifiée — même fond bleu clair pour toutes */
+    .lib-icon {
+      width: 48px; height: 48px; border-radius: 13px;
+      background: var(--blue-light);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .lib-icon svg { width: 22px; height: 22px; color: var(--blue-primary); }
+
+    /* Badge discret pour différencier */
+    .lib-badge {
+      font-size: 0.625rem; font-weight: 700; letter-spacing: 0.07em;
+      text-transform: uppercase; padding: 3px 9px;
+      border-radius: 20px;
+      background: var(--bg-subtle);
+      color: var(--text-tertiary);
+      border: 1px solid var(--border-light);
+      white-space: nowrap;
+    }
+
+    .lib-number {
+      font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.05em;
+      color: var(--text-tertiary); margin-bottom: 3px;
+    }
+    .lib-name {
+      font-size: 1.0625rem; font-weight: 800;
+      color: var(--text-primary); letter-spacing: -0.02em; line-height: 1.25;
+    }
+    .lib-desc {
+      font-size: 0.875rem; color: var(--text-secondary);
+      line-height: 1.65; flex: 1;
+    }
+
+    /* Tags uniformisés */
+    .lib-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .lib-tag {
+      font-size: 0.6875rem; font-weight: 600; padding: 2px 9px;
+      border-radius: 20px;
+      background: var(--bg-subtle); color: var(--text-secondary);
+      border: 1px solid var(--border-light);
+    }
+
+    /* Bouton unifié — même style pour toutes les cartes */
+    .lib-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 11px 20px; border-radius: 40px;
+      font-size: 0.875rem; font-weight: 700;
+      color: var(--blue-primary); text-decoration: none;
+      background: var(--blue-light);
+      border: 1.5px solid rgba(37,99,235,0.2);
+      transition: all 0.2s ease;
+      margin-top: 4px;
+    }
+    .lib-btn:hover {
+      background: var(--blue-primary); color: white;
+      border-color: var(--blue-primary);
+      box-shadow: 0 4px 14px rgba(37,99,235,0.25);
+      transform: translateY(-1px);
+    }
+    .lib-btn svg { width: 15px; height: 15px; }
+
+    /* 5e carte : centrée */
+    .lib-card-bonus {
+      grid-column: 1 / -1;
+      max-width: 520px; margin: 0 auto; width: 100%;
+    }
+
+    /* ══════════════════════════════════════
+       QUICK LINKS
+    ══════════════════════════════════════ */
+    .quick-links {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;
+    }
+    .quick-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 40px;
+      font-size: 0.8125rem; font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--bg-white); border: 1px solid var(--border-light);
+      text-decoration: none; box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+      transition: all 0.15s ease;
+    }
+    .quick-link:hover { border-color: var(--blue-primary); color: var(--blue-primary); background: var(--blue-light); }
+    .quick-link svg { width: 14px; height: 14px; }
+
+    /* ══════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════ */
+    @media(max-width: 1024px) {
+      .libraries-grid { grid-template-columns: 1fr; }
+      .lib-card-bonus { max-width: 100%; }
+    }
+    @media(max-width: 768px) {
+      .sidebar { display: none; }
+      .app-main { margin-left: 0; }
+      .app-content { padding: 20px 16px; }
+      .welcome-banner { flex-direction: column; align-items: flex-start; gap: 20px; padding: 28px 24px; }
+      .welcome-badge { align-self: flex-start; }
+    }
+    @media(max-width: 480px) {
+    }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- ══════════════════════════════════════
+       SIDEBAR
+  ══════════════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/>
+          <line x1="12" y1="22" x2="12" y2="15.5"/>
+          <polyline points="22 8.5 12 15.5 2 8.5"/>
+        </svg>
+      </div>
+      <span class="sidebar-logo-text">Nouvora <span>Labs</span></span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <p class="sidebar-section-label">Navigation</p>
+      <a href="app.html" class="sidebar-link active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+        Ma bibliothèque
+      </a>
+      <a href="index.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Accueil
+      </a>
+
+      <p class="sidebar-section-label">Mes accès</p>
+      <a href="https://drive.google.com/file/d/1N493nBLFPrbFsac0-hqdp3thTdYjxbR1/view?usp=drivesdk" target="_blank" rel="noopener" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Méga Ressources
+      </a>
+      <a href="https://drive.google.com/file/d/1MxBz0lxGp_wHfBRHsVIh6Yz7rf3Sr5ua/view?usp=drivesdk" target="_blank" rel="noopener" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        Kit Business en Ligne
+      </a>
+      <a href="https://drive.google.com/file/d/1N6r-3J0C7JgKQPqJXz9FZ0xcSDQ6XktF/view?usp=drivesdk" target="_blank" rel="noopener" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4"/></svg>
+        Prompts IA
+      </a>
+      <a href="https://drive.google.com/file/d/1Mj_b4S9lneIgydSsh8RE_3zuhW5nnoT7/view?usp=drivesdk" target="_blank" rel="noopener" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Logithèque Premium
+      </a>
+      <a href="https://drive.google.com/file/d/1NEUfGc23KROQ-zSIYVVWoX_l1bt8y_aZ/view?usp=drivesdk" target="_blank" rel="noopener" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Première Vente en Ligne
+      </a>
+
+      <p class="sidebar-section-label">Compte</p>
+      <a href="#" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Mon profil
+      </a>
+      <a href="index.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Déconnexion
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar">NL</div>
+        <div>
+          <p class="sidebar-user-name">Mon espace</p>
+          <p class="sidebar-user-plan">Membre Nouvora Labs</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══════════════════════════════════════
+       MAIN
+  ══════════════════════════════════════ -->
+  <main class="app-main">
+
+    <!-- Topbar -->
+    <div class="app-topbar">
+      <div class="app-topbar-left">
+        <p class="app-topbar-title">Ma Bibliothèque</p>
+        <div class="app-topbar-sep"></div>
+        <p class="app-topbar-sub">Nouvora Labs</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <a href="index.html" class="btn btn-ghost btn-sm" style="font-size:.8125rem;">← Accueil</a>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="app-content">
+
+      <!-- Premium Library Header -->
+      <div class="lib-header reveal">
+        <div class="lib-header-left">
+          <div class="lib-header-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/>
+              <line x1="12" y1="22" x2="12" y2="15.5"/>
+              <polyline points="22 8.5 12 15.5 2 8.5"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="lib-header-title">Nouvora Labs</h1>
+            <p class="lib-header-sub">Apprendre · Créer · Évoluer</p>
+          </div>
+        </div>
+        <div class="lib-header-stats">
+          <div class="lib-header-stat">
+            <span class="lib-header-stat-num">5</span>
+            <span class="lib-header-stat-label">Bibliothèques</span>
+          </div>
+          <div class="lib-header-divider"></div>
+          <div class="lib-header-stat">
+            <span class="lib-header-stat-num">300+</span>
+            <span class="lib-header-stat-label">Formations</span>
+          </div>
+          <div class="lib-header-divider"></div>
+          <div class="lib-header-stat">
+            <span class="lib-header-stat-num">∞</span>
+            <span class="lib-header-stat-label">Accès illimité</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="quick-links reveal">
+        <a href="https://drive.google.com/file/d/1N493nBLFPrbFsac0-hqdp3thTdYjxbR1/view?usp=drivesdk" target="_blank" class="quick-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Méga Ressources
+        </a>
+        <a href="https://drive.google.com/file/d/1MxBz0lxGp_wHfBRHsVIh6Yz7rf3Sr5ua/view?usp=drivesdk" target="_blank" class="quick-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+          Kit Business
+        </a>
+        <a href="https://drive.google.com/file/d/1N6r-3J0C7JgKQPqJXz9FZ0xcSDQ6XktF/view?usp=drivesdk" target="_blank" class="quick-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4"/></svg>
+          Prompts IA
+        </a>
+        <a href="https://drive.google.com/file/d/1Mj_b4S9lneIgydSsh8RE_3zuhW5nnoT7/view?usp=drivesdk" target="_blank" class="quick-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
+          Logithèque
+        </a>
+        <a href="https://drive.google.com/file/d/1NEUfGc23KROQ-zSIYVVWoX_l1bt8y_aZ/view?usp=drivesdk" target="_blank" class="quick-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          1ère Vente
+        </a>
+      </div>
+
+      <!-- Library Cards -->
+      <div class="section-title-row reveal" style="margin-top:28px;">
+        <h2>Mes bibliothèques</h2>
+        <p>5 accès disponibles</p>
+      </div>
+
+      <div class="libraries-grid">
+
+        <!-- 1 : MÉGA RESSOURCES -->
+        <div class="lib-card reveal delay-1">
+          <div class="lib-card-header">
+                        <div style="display:flex;align-items:center;gap:6px;">
+              <span class="lib-count-badge">+300 formations</span>
+              <span class="lib-badge">Bibliothèque 01</span>
+            </div>
+          </div>
+          <p class="lib-name">Méga Ressources</p>
+          <p class="lib-desc">La bibliothèque la plus complète — formations vidéo, ebooks, livres audio et ressources professionnelles couvrant le design, la vidéo, le marketing, le développement web et le développement personnel.</p>
+          <div class="lib-formations-grid">
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Photoshop
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Illustrator
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>InDesign
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>After Effects
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Premiere Pro
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Canva
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Google Ads
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Community Mgmt
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Excel Expert
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>PowerPoint
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Développement Web
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Full Stack Dev
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Anglais Pro
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Cryptomonnaies
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Livres Audio
+            </div>
+            <div class="lib-formation-item lib-formation-more">
+              +185 autres formations incluses
+            </div>
+          </div>
+          <button class="lib-btn resource-btn" data-href="https://drive.google.com/file/d/1N493nBLFPrbFsac0-hqdp3thTdYjxbR1/view?usp=drivesdk">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="9 11 12 14 22 4"/></svg>
+            Explorer la Collection
+          </button>
+        </div>
+
+        <!-- 2 : KIT BUSINESS -->
+        <div class="lib-card reveal delay-2">
+          <div class="lib-card-header">
+                        <div style="display:flex;align-items:center;gap:6px;">
+              <span class="lib-count-badge">+35 formations</span>
+              <span class="lib-badge">Bibliothèque 02</span>
+            </div>
+          </div>
+          <p class="lib-name">Kit Business en Ligne</p>
+          <p class="lib-desc">Tout ce qu'il faut pour lancer et développer une activité rentable en ligne — des formations concrètes sur les outils et stratégies qui fonctionnent vraiment.</p>
+          <div class="lib-formations-grid">
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>ChatGPT de A à Z
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Automatisation IA
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Midjourney
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Facebook Ads
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Google Analytics
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>TikTok Marketing
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Shopify
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Dropshipping
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Affiliation
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>WordPress
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Python
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>DaVinci Resolve
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Trading
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Excel VBA
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Cybersécurité WP
+            </div>
+            <div class="lib-formation-item lib-formation-more">
+              +20 autres formations incluses
+            </div>
+          </div>
+          <button class="lib-btn resource-btn" data-href="https://drive.google.com/file/d/1MxBz0lxGp_wHfBRHsVIh6Yz7rf3Sr5ua/view?usp=drivesdk">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="9 11 12 14 22 4"/></svg>
+            Explorer le Kit
+          </button>
+        </div>
+
+        <!-- 3 -->
+        <div class="lib-card reveal delay-3">
+          <div class="lib-card-header">
+                        <span class="lib-badge">Bibliothèque 03</span>
+          </div>
+          <p class="lib-name">Prompts IA</p>
+          <p class="lib-desc">Bibliothèque de prompts optimisés pour décupler votre productivité, votre marketing, votre création de contenu et l'automatisation de vos projets numériques.</p>
+          <div class="lib-formations-grid">
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Prompts ChatGPT
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Automatisation IA
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Marketing IA
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Productivité IA
+            </div>
+            <div class="lib-formation-item lib-formation-more">
+              +50 prompts supplémentaires inclus
+            </div>
+          </div>
+          <button class="lib-btn resource-btn" data-href="https://drive.google.com/file/d/1N6r-3J0C7JgKQPqJXz9FZ0xcSDQ6XktF/view?usp=drivesdk">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="9 11 12 14 22 4"/></svg>
+            Découvrir les Prompts
+          </button>
+        </div>
+
+        <!-- 4 -->
+        <div class="lib-card reveal delay-4">
+          <div class="lib-card-header">
+                        <span class="lib-badge">Bibliothèque 04</span>
+          </div>
+          <p class="lib-name">Logiciels</p>
+          <p class="lib-desc">Collection soigneusement sélectionnée de logiciels professionnels, outils numériques et ressources complémentaires pour créateurs et entrepreneurs exigeants.</p>
+          <div class="lib-formations-grid">
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Logiciels professionnels
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Outils numériques
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Ressources complémentaires
+            </div>
+            <div class="lib-formation-item lib-formation-more">
+              +30 outils et logiciels supplémentaires
+            </div>
+          </div>
+          <button class="lib-btn resource-btn" data-href="https://drive.google.com/file/d/1Mj_b4S9lneIgydSsh8RE_3zuhW5nnoT7/view?usp=drivesdk">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="9 11 12 14 22 4"/></svg>
+            Accéder aux Logiciels
+          </button>
+        </div>
+
+        <!-- 5 — Première Vente en Ligne -->
+        <div class="lib-card lib-card-bonus reveal delay-5">
+          <div class="lib-card-header">
+            <span class="lib-badge">Bibliothèque 05</span>
+          </div>
+          <p class="lib-name">Première Vente en Ligne</p>
+          <p class="lib-desc">Le guide pratique pour décrocher vos premiers revenus en ligne — de l'acquisition client à la mise en pratique, étape par étape.</p>
+          <div class="lib-formations-grid">
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Acquisition client
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Vente en ligne
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Premiers revenus
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Mise en pratique rapide
+            </div>
+            <div class="lib-formation-item lib-formation-more">
+              +15 ressources supplémentaires incluses
+            </div>
+          </div>
+          <button class="lib-btn resource-btn" data-href="https://drive.google.com/file/d/1NEUfGc23KROQ-zSIYVVWoX_l1bt8y_aZ/view?usp=drivesdk">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="9 11 12 14 22 4"/></svg>
+            Découvrir le Guide
+          </button>
+        </div>
+
+        <!-- 6 — 500 Idées de Business -->
+        <div class="lib-card lib-card-bonus reveal delay-6">
+          <div class="lib-card-header">
+            <span class="lib-badge">Bibliothèque 06</span>
+            <span class="lib-count-badge">500 idées</span>
+          </div>
+          <p class="lib-name">500 Idées de Business Rentables</p>
+          <p class="lib-desc">Une banque géante d'idées de business prêtes à lancer, triées par secteur — pour ne plus jamais manquer d'inspiration pour démarrer ou diversifier votre activité.</p>
+          <div class="lib-formations-grid">
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>E-commerce &amp; Dropshipping
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Import-Export
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Mobile Money (Orange/MTN)
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Investir en Bourse (BRVM)
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Immobilier &amp; Terrains
+            </div>
+            <div class="lib-formation-item">
+              <span class="lib-formation-dot"></span>Agences de Livraison
+            </div>
+            <div class="lib-formation-item lib-formation-more">
+              +494 autres idées rentables incluses
+            </div>
+          </div>
+          <button class="lib-btn resource-btn" data-href="https://drive.google.com/file/d/1OpAY1ZSQZS6vP0ETeuS_rr-hZxVbrLt8/view?usp=drivesdk">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Télécharger les 500 idées
+          </button>
+        </div>
+
+      </div>
+
+
+      <!-- ─── Badges visuels ─────────────────────── -->
+      <div class="skills-badges-wrap reveal">
+        <p class="skills-badges-title">Compétences & outils inclus dans la plateforme</p>
+        <div class="skills-badges">
+          <span class="skill-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4"/></svg>
+            ChatGPT
+          </span>
+          <span class="skill-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Midjourney
+          </span>
+          <span class="skill-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            Facebook Ads
+          </span>
+          <span class="skill-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            Shopify
+          </span>
+          <span class="skill-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            WordPress
+          </span>
+          <span class="skill-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            Python
+          </span>
+          <span class="skill-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+            Photoshop
+          </span>
+          <span class="skill-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="12" cy="12" r="3"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10"/></svg>
+            Illustrator
+          </span>
+          <span class="skill-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>
+            Canva
+          </span>
+          <span class="skill-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            After Effects
+          </span>
+          <span class="skill-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Excel
+          </span>
+          <span class="skill-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+            Google Ads
+          </span>
+          <span class="skill-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            Dropshipping
+          </span>
+          <span class="skill-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Trading
+          </span>
+          <span class="skill-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Cybersécurité
+          </span>
+          <span class="skill-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            Livres Audio
+          </span>
+          <span class="skill-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/></svg>
+            Ebooks
+          </span>
+          <span class="skill-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            DaVinci Resolve
+          </span>
+        </div>
+      </div>
+
+      <style>
+        .skills-badges-wrap {
+          margin-bottom: 32px;
+          background: var(--bg-white);
+          border: 1px solid var(--border-light);
+          border-radius: 16px;
+          padding: 22px 24px;
+          box-shadow: 0 1px 4px rgba(15,23,42,0.04);
+        }
+        .skills-badges-title {
+          font-size: 0.75rem; font-weight: 700; letter-spacing: 0.07em;
+          text-transform: uppercase; color: var(--text-tertiary);
+          margin-bottom: 14px;
+        }
+        .skills-badges {
+          display: flex; flex-wrap: wrap; gap: 8px;
+        }
+        .skill-badge {
+          display: inline-flex; align-items: center; gap: 5px;
+          font-size: 0.8125rem; font-weight: 600;
+          color: var(--text-secondary);
+          background: var(--bg-subtle);
+          border: 1px solid var(--border-light);
+          border-radius: 20px; padding: 5px 12px;
+          transition: all 0.15s ease;
+          cursor: default;
+        }
+        .skill-badge:hover {
+          background: var(--blue-light);
+          border-color: rgba(37,99,235,0.25);
+          color: var(--blue-primary);
+        }
+        .skill-badge svg { flex-shrink: 0; }
+      </style>
+
+    </div>
+  </main>
+
+</div>
+
+<script src="assets/js/main.js"></script>
+<script src="assets/js/animations.js"></script>
+
+<!-- ═══════════════════════════════════════════════════
+     BOUTON WHATSAPP FLOTTANT
+═══════════════════════════════════════════════════ -->
+<a href="https://wa.me/2290141442586?text=Bonjour,%0aje%20vous%20contacte%20depuis%20Nouvora.%0aJ%27ai%20besoin%20d%27assistance."
+   target="_blank" rel="noopener" class="whatsapp-fab" aria-label="Contacter le support WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" width="26" height="26" aria-hidden="true">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+    <path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.558 4.122 1.535 5.857L.057 23.882a.5.5 0 0 0 .612.612l6.056-1.478A11.95 11.95 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.017-1.373l-.36-.214-3.732.91.927-3.644-.233-.376A9.818 9.818 0 0 1 2.182 12C2.182 6.567 6.567 2.182 12 2.182S21.818 6.567 21.818 12 17.433 21.818 12 21.818z"/>
+  </svg>
+</a>
+
+<!-- ═══════════════════════════════════════════════════
+     MODAL PREMIUM
+═══════════════════════════════════════════════════ -->
+<div id="premiumModal" class="premium-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="premiumModalTitle">
+  <div class="premium-modal">
+    <button class="premium-modal-close" id="premiumModalClose" aria-label="Fermer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="premium-modal-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="28" height="28"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    </div>
+    <h2 id="premiumModalTitle" class="premium-modal-title">Accès Premium requis</h2>
+    <p class="premium-modal-text">Cette ressource fait partie de la bibliothèque premium Nouvora.<br/>Débloquez l'accès complet à toutes les collections disponibles sur la plateforme.</p>
+    <!-- Redirige vers la landing page pour créer un compte et payer -->
+    <a href="index.html" class="premium-modal-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      Débloquer l'accès
+    </a>
+  </div>
+</div>
+
+<style>
+/* ── WhatsApp FAB ── */
+.whatsapp-fab {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 9999;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #25D366;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.35), 0 2px 8px rgba(0,0,0,0.12);
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.whatsapp-fab:hover {
+  transform: scale(1.08) translateY(-2px);
+  box-shadow: 0 8px 28px rgba(37,211,102,0.45), 0 4px 12px rgba(0,0,0,0.14);
+}
+
+/* ── Premium Modal ── */
+.premium-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.premium-modal-overlay.active {
+  display: flex;
+}
+.premium-modal {
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px 36px 36px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 24px 64px rgba(15,23,42,0.18), 0 4px 16px rgba(15,23,42,0.08);
+  text-align: center;
+  position: relative;
+  animation: modalIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.92) translateY(12px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.premium-modal-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 1px solid #E2E8F0;
+  background: #F8FAFC;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: #64748B;
+  transition: all 0.15s ease;
+}
+.premium-modal-close:hover { background: #F1F5F9; color: #0F172A; }
+.premium-modal-icon {
+  width: 64px; height: 64px; border-radius: 18px;
+  background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  color: #2563EB;
+}
+.premium-modal-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 12px;
+  letter-spacing: -0.02em;
+}
+.premium-modal-text {
+  font-size: 0.9rem;
+  color: #475569;
+  line-height: 1.65;
+  margin: 0 0 28px;
+}
+.premium-modal-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+  color: #fff;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  padding: 14px 28px;
+  border-radius: 12px;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(37,99,235,0.35);
+  transition: all 0.2s ease;
+  letter-spacing: -0.01em;
+}
+.premium-modal-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(37,99,235,0.4);
+}
+
+/* ── Lib button as button element ── */
+.lib-btn {
+  cursor: pointer;
+  width: 100%;
+  border: none;
+  font-family: inherit;
+}
+</style>
+
+<script>
+/* ══════════════════════════════════════
+   SYSTÈME DE RÔLES NOUVORA
+   Rôles : visiteur | premium | admin
+   - visiteur : peut voir, ne peut pas ouvrir
+   - premium  : accès complet aux ressources
+   - admin    : accès complet + jamais bloqué
+══════════════════════════════════════ */
+
+const ROLE_KEY = 'nouvora_user_role';
+
+function getUserRole() {
+  return localStorage.getItem(ROLE_KEY) || 'visiteur';
+}
+
+function hasAccess() {
+  const role = getUserRole();
+  return role === 'premium' || role === 'admin';
+}
+
+function isAdmin() {
+  return getUserRole() === 'admin';
+}
+
+/* Mettre à jour le badge de rôle visible dans la sidebar si présent */
+function updateRoleBadge() {
+  const role = getUserRole();
+  const badge = document.getElementById('userRoleBadge');
+  if (badge) {
+    const labels = { visiteur: 'Visiteur', premium: 'Premium', admin: 'Admin' };
+    badge.textContent = labels[role] || role;
+    badge.className = 'role-badge role-badge--' + role;
+  }
+  /* Afficher/masquer liens admin */
+  const adminLinks = document.querySelectorAll('.admin-only');
+  adminLinks.forEach(el => {
+    el.style.display = isAdmin() ? '' : 'none';
+  });
+}
+
+const modal = document.getElementById('premiumModal');
+const modalClose = document.getElementById('premiumModalClose');
+
+function openPremiumModal() {
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closePremiumModal() {
+  modal.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+modalClose.addEventListener('click', closePremiumModal);
+modal.addEventListener('click', (e) => {
+  if (e.target === modal) closePremiumModal();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && modal.classList.contains('active')) closePremiumModal();
+});
+
+/* Boutons ressources */
+document.querySelectorAll('.resource-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (hasAccess()) {
+      const href = btn.dataset.href;
+      if (href) window.open(href, '_blank', 'noopener');
+    } else {
+      openPremiumModal();
+    }
+  });
+});
+
+/* Liens sidebar/quick-links vers ressources Drive */
+document.querySelectorAll('.sidebar-link[href*="drive.google"], .quick-link[href*="drive.google"]').forEach(link => {
+  link.addEventListener('click', (e) => {
+    if (!hasAccess()) {
+      e.preventDefault();
+      openPremiumModal();
+    }
+  });
+});
+
+/* Init */
+updateRoleBadge();
+</script>
+</body>
+</html>

@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Administration — Nouvora Labs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #F1F5F9; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+    a { text-decoration: none; color: inherit; }
+    button { cursor: pointer; font-family: inherit; border: none; background: none; }
+    .admin-layout { display: flex; min-height: 100vh; }
+    .sidebar { width: 240px; background: #0F172A; position: fixed; top:0; left:0; bottom:0; display:flex; flex-direction:column; z-index:100; overflow-y:auto; }
+    .sidebar-header { padding:20px 18px; border-bottom:1px solid rgba(255,255,255,.07); display:flex; align-items:center; gap:10px; }
+    .sidebar-logo-icon { width:32px; height:32px; background:#2563EB; border-radius:9px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .sidebar-logo-icon svg { width:17px; height:17px; color:white; }
+    .sidebar-logo-text { font-size:.9rem; font-weight:700; color:white; letter-spacing:-.02em; }
+    .sidebar-logo-sub  { font-size:.65rem; color:rgba(255,255,255,.35); margin-top:1px; }
+    .sidebar-nav { padding:14px 10px; flex:1; }
+    .nav-section { font-size:.63rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.25); padding:4px 10px; margin:18px 0 4px; }
+    .sidebar-btn { display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:9px; font-size:.8375rem; font-weight:500; color:rgba(255,255,255,.5); width:100%; text-align:left; margin-bottom:2px; transition:all .15s; }
+    .sidebar-btn svg { width:15px; height:15px; flex-shrink:0; }
+    .sidebar-btn:hover { background:rgba(255,255,255,.07); color:rgba(255,255,255,.9); }
+    .sidebar-btn.active { background:rgba(37,99,235,.3); color:#93C5FD; }
+    .nav-badge { margin-left:auto; color:white; font-size:.6rem; font-weight:700; padding:2px 7px; border-radius:20px; background:#2563EB; }
+    .sidebar-footer { padding:14px; border-top:1px solid rgba(255,255,255,.07); }
+    .sidebar-footer-user { display:flex; align-items:center; gap:10px; padding:10px; border-radius:9px; background:rgba(255,255,255,.05); }
+    .sidebar-avatar { width:32px; height:32px; border-radius:50%; background:#2563EB; display:flex; align-items:center; justify-content:center; font-size:.8rem; font-weight:700; color:white; flex-shrink:0; }
+    .sidebar-user-name { font-size:.8rem; font-weight:600; color:white; }
+    .sidebar-user-role { font-size:.65rem; color:rgba(255,255,255,.35); }
+    .admin-main { margin-left:240px; flex:1; min-height:100vh; }
+    .admin-topbar { background:white; border-bottom:1px solid #E2E8F0; padding:0 28px; height:60px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:50; }
+    .topbar-title { font-size:1rem; font-weight:800; color:#0F172A; letter-spacing:-.03em; }
+    .topbar-actions { display:flex; gap:10px; }
+    .btn { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:9px; font-size:.8125rem; font-weight:700; transition:all .15s; }
+    .btn svg { width:13px; height:13px; }
+    .btn-primary { background:#2563EB; color:white; }
+    .btn-primary:hover { background:#1D4ED8; }
+    .btn-ghost { background:#F8FAFC; border:1px solid #E2E8F0; color:#475569; }
+    .btn-ghost:hover { background:#F1F5F9; }
+    .btn-sm { padding:5px 12px; font-size:.76rem; border-radius:7px; }
+    .btn-danger  { background:#FEF2F2; color:#DC2626; border:1px solid #FECACA; }
+    .btn-success { background:#F0FDF4; color:#15803D; border:1px solid #BBF7D0; }
+    .btn-warning { background:#FFFBEB; color:#92400E; border:1px solid #FDE68A; }
+    .admin-content { padding:28px; }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+    .section-hdr { margin-bottom:20px; }
+    .section-hdr h2 { font-size:1.0625rem; font-weight:800; color:#0F172A; letter-spacing:-.03em; margin-bottom:3px; }
+    .section-hdr p  { font-size:.8125rem; color:#64748B; }
+    /* KPI */
+    .kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+    .kpi-card { background:white; border:1px solid #E2E8F0; border-radius:14px; padding:20px 20px 18px; }
+    .kpi-top  { display:flex; justify-content:flex-end; margin-bottom:12px; }
+    .kpi-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; }
+    .kpi-icon svg { width:20px; height:20px; }
+    .kpi-icon.blue   { background:#EFF6FF; color:#2563EB; }
+    .kpi-icon.green  { background:#F0FDF4; color:#16A34A; }
+    .kpi-icon.amber  { background:#FFFBEB; color:#D97706; }
+    .kpi-icon.purple { background:#FAF5FF; color:#9333EA; }
+    .kpi-value { font-size:1.875rem; font-weight:800; color:#0F172A; letter-spacing:-.04em; line-height:1; margin-bottom:4px; }
+    .kpi-label { font-size:.78rem; color:#64748B; font-weight:500; }
+    /* Chart row */
+    .dashboard-row { display:grid; grid-template-columns:1fr 300px; gap:20px; margin-bottom:24px; }
+    .chart-card { background:white; border:1px solid #E2E8F0; border-radius:14px; padding:24px; }
+    .chart-card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+    .chart-card-title { font-size:.9375rem; font-weight:800; color:#0F172A; letter-spacing:-.03em; }
+    .chart-wrap { height:220px; position:relative; }
+    .mini-cards { display:flex; flex-direction:column; gap:12px; }
+    .mini-card { background:white; border:1px solid #E2E8F0; border-radius:12px; padding:14px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .mini-card-label { font-size:.75rem; color:#64748B; font-weight:500; margin-bottom:2px; }
+    .mini-card-value { font-size:1.25rem; font-weight:800; color:#0F172A; letter-spacing:-.03em; }
+    .mini-icon { width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .mini-icon svg { width:16px; height:16px; }
+    .mini-icon.blue   { background:#EFF6FF; color:#2563EB; }
+    .mini-icon.amber  { background:#FFFBEB; color:#D97706; }
+    .mini-icon.green  { background:#F0FDF4; color:#16A34A; }
+    .mini-icon.purple { background:#FAF5FF; color:#9333EA; }
+    /* Tables */
+    .table-card { background:white; border:1px solid #E2E8F0; border-radius:14px; overflow:hidden; margin-bottom:20px; }
+    .table-card-header { padding:16px 20px; border-bottom:1px solid #F1F5F9; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+    .table-card-header h3 { font-size:.9375rem; font-weight:800; color:#0F172A; letter-spacing:-.03em; }
+    .table-search { display:flex; align-items:center; gap:8px; padding:6px 12px; border:1px solid #E2E8F0; border-radius:8px; background:#F8FAFC; }
+    .pay-filter-btn { padding:7px 14px; border:none; background:transparent; border-radius:7px; font-size:.78rem; font-weight:600; color:#64748B; cursor:pointer; font-family:inherit; transition:all .15s; }
+    .pay-filter-btn.active { background:#fff; color:#0F172A; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+    .table-search input { border:none; background:transparent; outline:none; font-size:.8125rem; color:#0F172A; width:160px; font-family:inherit; }
+    .table-search svg { width:14px; height:14px; color:#94A3B8; flex-shrink:0; }
+    table { width:100%; border-collapse:collapse; }
+    thead th { padding:10px 16px; font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:#94A3B8; text-align:left; background:#F8FAFC; border-bottom:1px solid #F1F5F9; }
+    tbody td { padding:12px 16px; font-size:.8375rem; color:#334155; border-bottom:1px solid #F8FAFC; }
+    tbody tr:last-child td { border-bottom:none; }
+    tbody tr:hover td { background:#FAFBFC; }
+    .empty-td { text-align:center; color:#94A3B8; padding:36px 16px; font-size:.875rem; }
+    /* Badges */
+    .badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:20px; font-size:.7rem; font-weight:700; }
+    .badge::before { content:''; width:5px; height:5px; border-radius:50%; flex-shrink:0; }
+    .badge-subtle { background:#F8FAFC; color:#64748B; border:1px solid #E2E8F0; }
+    .badge-subtle::before { background:#94A3B8; }
+    .badge-blue   { background:#EFF6FF; color:#1D4ED8; }
+    .badge-blue::before { background:#2563EB; }
+    .badge-purple { background:#FAF5FF; color:#7C3AED; }
+    .badge-purple::before { background:#9333EA; }
+    .badge-green  { background:#F0FDF4; color:#15803D; border:1px solid #BBF7D0; }
+    .badge-green::before { background:#16A34A; }
+    .badge-amber  { background:#FFFBEB; color:#92400E; }
+    .badge-amber::before { background:#D97706; }
+    .role-select { padding:5px 10px; border-radius:7px; border:1px solid #E2E8F0; font-size:.8rem; font-weight:600; background:white; cursor:pointer; font-family:inherit; }
+    /* Resources */
+    .res-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; }
+    .res-card { background:white; border:1px solid #E2E8F0; border-radius:14px; padding:20px; }
+    .res-card h4 { font-size:.875rem; font-weight:800; color:#0F172A; margin-bottom:14px; letter-spacing:-.02em; }
+    .form-group { margin-bottom:12px; }
+    .form-label { display:block; font-size:.75rem; font-weight:700; color:#374151; margin-bottom:5px; }
+    .form-input { width:100%; padding:9px 12px; border:1px solid #E2E8F0; border-radius:8px; font-size:.8125rem; color:#0F172A; font-family:inherit; background:#FAFBFC; outline:none; transition:border-color .15s; }
+    .form-input:focus { border-color:#2563EB; background:white; }
+    textarea.form-input { resize:vertical; min-height:60px; }
+    .save-ok { display:none; font-size:.75rem; font-weight:700; color:#16A34A; margin-left:10px; }
+    .save-ok.show { display:inline; }
+    /* Captures */
+    .upload-zone { border:2px dashed #CBD5E1; border-radius:14px; padding:36px 24px; text-align:center; background:#F8FAFC; transition:all .2s; cursor:pointer; margin-bottom:20px; }
+    .upload-zone:hover, .upload-zone.drag-over { border-color:#2563EB; background:#EFF6FF; }
+    .upload-icon { width:46px; height:46px; background:#EFF6FF; border-radius:11px; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; }
+    .upload-icon svg { width:22px; height:22px; color:#2563EB; }
+    .upload-zone h4 { font-size:.9375rem; font-weight:700; color:#0F172A; margin-bottom:4px; }
+    .upload-zone p { font-size:.8125rem; color:#64748B; }
+    .upload-formats { font-size:.72rem; color:#94A3B8; margin-top:6px; }
+    .captures-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; margin-bottom:20px; }
+    .cap-item { background:white; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden; position:relative; }
+    .cap-item img { width:100%; aspect-ratio:1/1; object-fit:cover; display:block; }
+    .cap-status { position:absolute; top:8px; left:8px; font-size:.65rem; font-weight:800; padding:2px 8px; border-radius:20px; }
+    .cap-status.published { background:#16A34A; color:white; }
+    .cap-status.pending   { background:#64748B; color:white; }
+    .cap-overlay { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(transparent,rgba(0,0,0,.75)); padding:10px 8px 8px; display:flex; gap:5px; justify-content:flex-end; }
+    /* Pricing */
+    .pricing-wrap { display:grid; grid-template-columns:1fr 1fr; gap:20px; max-width:860px; }
+    .pricing-card { background:white; border:1px solid #E2E8F0; border-radius:14px; padding:24px; }
+    .pricing-card h3 { font-size:.9375rem; font-weight:800; color:#0F172A; letter-spacing:-.03em; margin-bottom:20px; }
+    .toggle-row { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid #F1F5F9; margin-bottom:14px; }
+    .toggle-label { font-size:.875rem; font-weight:600; color:#0F172A; }
+    .toggle-sub   { font-size:.75rem; color:#64748B; }
+    .toggle-sw { position:relative; width:44px; height:24px; flex-shrink:0; }
+    .toggle-sw input { opacity:0; width:0; height:0; position:absolute; }
+    .toggle-track { position:absolute; inset:0; background:#CBD5E1; border-radius:12px; cursor:pointer; transition:.25s; }
+    .toggle-track::before { content:''; position:absolute; width:18px; height:18px; left:3px; top:3px; background:white; border-radius:50%; transition:.25s; }
+    .toggle-sw input:checked + .toggle-track { background:#2563EB; }
+    .toggle-sw input:checked + .toggle-track::before { transform:translateX(20px); }
+    .pricing-preview { background:#F8FAFC; border:1px solid #E2E8F0; border-radius:12px; padding:20px; text-align:center; margin-top:20px; }
+    .preview-label { font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:#64748B; margin-bottom:12px; }
+    .preview-badge { display:inline-block; background:#EF4444; color:white; font-size:.7rem; font-weight:800; padding:2px 10px; border-radius:20px; letter-spacing:.06em; margin-bottom:8px; }
+    .preview-price-normal  { font-size:2rem; font-weight:900; color:#0F172A; letter-spacing:-.04em; }
+    .preview-price-crossed { text-decoration:line-through; color:#94A3B8; font-size:1.125rem; margin-right:6px; font-weight:600; }
+    .preview-price-promo   { font-size:2rem; font-weight:900; color:#16A34A; letter-spacing:-.04em; }
+    .genius-box { margin-top:14px; background:#EFF6FF; border:1px solid #BFDBFE; border-radius:10px; padding:12px 16px; }
+    .genius-box-label { font-size:.72rem; font-weight:700; color:#1D4ED8; margin-bottom:3px; }
+    .genius-box-val   { font-size:.8375rem; color:#0F172A; }
+    /* Responsive */
+    @media(max-width:1200px) { .dashboard-row { grid-template-columns:1fr; } .mini-cards { flex-direction:row; flex-wrap:wrap; } .mini-card { flex:1 1 calc(50% - 6px); } }
+    @media(max-width:1024px) { .kpi-grid { grid-template-columns:repeat(2,1fr); } .pricing-wrap { grid-template-columns:1fr; } }
+    @media(max-width:768px)  { .sidebar { display:none; } .admin-main { margin-left:0; } .admin-content { padding:16px; } }
+    @media(max-width:480px)  { .kpi-grid { grid-template-columns:1fr; } }
+    .wa-fab { position:fixed; bottom:24px; right:24px; z-index:999; width:52px; height:52px; border-radius:50%; background:#25D366; color:white; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 20px rgba(37,211,102,.35); text-decoration:none; transition:transform .2s; }
+    .wa-fab:hover { transform:scale(1.08) translateY(-2px); }
+  </style>
+  <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/geniuspay-client.js"></script>
+</head>
+<body>
+
+<div class="admin-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg>
+      </div>
+      <div>
+        <div class="sidebar-logo-text">Nouvora Labs</div>
+        <div class="sidebar-logo-sub">Administration</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Vue d'ensemble</div>
+      <button class="sidebar-btn active" onclick="showTab('dashboard',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard
+      </button>
+
+      <div class="nav-section">Gestion</div>
+      <button class="sidebar-btn" onclick="showTab('users',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Utilisateurs
+        <span class="nav-badge" id="sidebarUserCount">0</span>
+      </button>
+      <button class="sidebar-btn" onclick="showTab('resources',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>Ressources
+      </button>
+      <button class="sidebar-btn" onclick="showTab('payments',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Paiements
+        <span class="nav-badge" id="sidebarPayCount" style="display:none">0</span>
+      </button>
+      <button class="sidebar-btn" onclick="showTab('testimonials',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Témoignages
+        <span class="nav-badge" id="sidebarTestiCount" style="display:none">0</span>
+      </button>
+
+      <div class="nav-section">Configuration</div>
+      <button class="sidebar-btn" onclick="showTab('pricing',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Tarification
+      </button>
+      <button class="sidebar-btn" onclick="showTab('settings',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009.6 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9.6a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Paramètres
+      </button>
+
+      <div class="nav-section">Accès</div>
+      <a href="app.html"   class="sidebar-btn" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>Vue utilisateur (App)</a>
+      <a href="index.html" class="sidebar-btn" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Landing page</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-user">
+        <div class="sidebar-avatar">A</div>
+        <div><div class="sidebar-user-name">Admin</div><div class="sidebar-user-role">Administrateur</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+    <header class="admin-topbar">
+      <span class="topbar-title" id="topbarTitle">Dashboard</span>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost btn-sm" onclick="exportUsers()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Exporter CSV
+        </button>
+      </div>
+    </header>
+
+    <div class="admin-content">
+
+      <!-- DASHBOARD -->
+      <div id="tab-dashboard" class="tab-panel active">
+        <div class="section-hdr"><h2>Vue d'ensemble</h2><p>Données réelles — aucune statistique fictive</p></div>
+
+        <!-- Section 1 : 4 KPIs -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-top"><div class="kpi-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div></div>
+            <div class="kpi-value" id="kpiTotal">0</div><div class="kpi-label">Utilisateurs inscrits</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-top"><div class="kpi-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div></div>
+            <div class="kpi-value" id="kpiPremium">0</div><div class="kpi-label">Utilisateurs Premium</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-top"><div class="kpi-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div></div>
+            <div class="kpi-value" id="kpiPayments">0</div><div class="kpi-label">Paiements validés</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-top"><div class="kpi-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div></div>
+            <div class="kpi-value" id="kpiRevenue">0 FCFA</div><div class="kpi-label">Revenus générés</div>
+          </div>
+        </div>
+
+        <!-- Section 2 : Graphique 70% + mini-cartes 30% -->
+        <div class="dashboard-row">
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div class="chart-card-title">Évolution des inscriptions</div>
+              <span style="font-size:.75rem;color:#94A3B8;">7 derniers jours</span>
+            </div>
+            <div class="chart-wrap"><canvas id="inscriptionsChart"></canvas></div>
+          </div>
+          <div class="mini-cards">
+            <div class="mini-card">
+              <div><div class="mini-card-label">Témoignages publiés</div><div class="mini-card-value" id="miniApproved">0</div></div>
+              <div class="mini-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+            </div>
+            <div class="mini-card">
+              <div><div class="mini-card-label">Témoignages en attente</div><div class="mini-card-value" id="miniPending">0</div></div>
+              <div class="mini-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+            </div>
+            <div class="mini-card">
+              <div><div class="mini-card-label">Bibliothèques actives</div><div class="mini-card-value" id="miniLibs">5</div></div>
+              <div class="mini-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div>
+            </div>
+            <div class="mini-card">
+              <div><div class="mini-card-label">Taux de conversion</div><div class="mini-card-value" id="miniConv">0%</div></div>
+              <div class="mini-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Derniers inscrits -->
+        <div class="table-card">
+          <div class="table-card-header"><h3>Derniers inscrits</h3></div>
+          <table><thead><tr><th>Membre</th><th>Email</th><th>Date</th><th>Rôle</th></tr></thead>
+          <tbody id="recentUsersBody"></tbody></table>
+        </div>
+
+        <!-- Fil d'activité récente -->
+        <div class="table-card" style="margin-top:20px;">
+          <div class="table-card-header"><h3>Activité récente</h3></div>
+          <div id="activityFeed" style="padding:8px 0;"></div>
+        </div>
+      </div>
+
+      <!-- UTILISATEURS -->
+      <div id="tab-users" class="tab-panel">
+        <div class="section-hdr"><h2>Gestion des utilisateurs</h2><p>Modifiez le rôle de chaque membre — cliquez une ligne pour voir le détail</p></div>
+        <div class="table-card">
+          <div class="table-card-header">
+            <h3>Tous les membres</h3>
+            <div class="table-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="userSearch" placeholder="Rechercher…" oninput="filterUsers()" /></div>
+          </div>
+          <table><thead><tr><th>Nom</th><th>Prénom</th><th>Email</th><th>Date</th><th>Rôle</th><th>Modifier</th></tr></thead>
+          <tbody id="usersTableBody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- Modal détail utilisateur -->
+      <div id="userDetailOverlay" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:1500;align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this)closeUserDetail()">
+        <div style="background:#fff;border-radius:18px;padding:28px;max-width:480px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+            <h3 style="font-size:1.05rem;font-weight:800;color:#0F172A;">Détail du membre</h3>
+            <button onclick="closeUserDetail()" style="width:30px;height:30px;border-radius:50%;background:#F1F5F9;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2.5" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+          <div id="userDetailContent"></div>
+        </div>
+      </div>
+
+      <!-- RESSOURCES -->
+      <div id="tab-resources" class="tab-panel">
+        <div class="section-hdr"><h2>Gestion des ressources</h2><p>Modifiez nom, description et lien sans toucher au code</p></div>
+        <div class="res-grid" id="resourcesGrid"></div>
+      </div>
+
+      <!-- PAIEMENTS -->
+      <div id="tab-payments" class="tab-panel">
+        <div class="section-hdr"><h2>Gestion des paiements</h2><p>Historique de tous les paiements</p></div>
+        <div class="table-card">
+          <div class="table-card-header">
+            <h3>Historique</h3>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              <div class="pay-filter-group" style="display:flex;gap:4px;background:#F1F5F9;border-radius:9px;padding:3px;">
+                <button class="pay-filter-btn active" data-filter="all" onclick="setPayFilter('all',this)">Tous</button>
+                <button class="pay-filter-btn" data-filter="validé" onclick="setPayFilter('validé',this)">Validés</button>
+                <button class="pay-filter-btn" data-filter="en attente" onclick="setPayFilter('en attente',this)">En attente</button>
+              </div>
+              <select id="paySort" class="form-input" style="padding:8px 12px;font-size:.8rem;width:auto;" onchange="filterPayments()">
+                <option value="desc">Plus récent</option>
+                <option value="asc">Plus ancien</option>
+              </select>
+              <div class="table-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="paySearch" placeholder="Rechercher…" oninput="filterPayments()" /></div>
+            </div>
+          </div>
+          <table><thead><tr><th>Client</th><th>Email</th><th>Montant</th><th>Date</th><th>Statut</th></tr></thead>
+          <tbody id="paymentsTableBody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- TÉMOIGNAGES (CAPTURES) -->
+      <div id="tab-testimonials" class="tab-panel">
+        <div class="section-hdr"><h2>Gestion des témoignages</h2><p>Téléversez des captures d'écran — publiées automatiquement sur la Landing Page</p></div>
+
+        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('captureInput').click()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+          <div class="upload-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+          <h4>Téléverser des captures</h4>
+          <p>Cliquez ici ou glissez-déposez vos images</p>
+          <div class="upload-formats">JPG · PNG · WEBP &nbsp;—&nbsp; Plusieurs images simultanées acceptées</div>
+        </div>
+        <input type="file" id="captureInput" accept="image/jpeg,image/png,image/webp" multiple style="display:none" onchange="handleFileSelect(event)" />
+
+        <div id="capturesGrid" class="captures-grid"></div>
+
+        <div id="capturesActions" style="display:none;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
+          <button class="btn btn-primary" onclick="publishAllNew()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>Publier sur le site
+          </button>
+        </div>
+
+        <!-- Témoignages textuels -->
+        <div class="table-card" style="margin-top:8px;">
+          <div class="table-card-header">
+            <h3>Témoignages textuels</h3>
+            <div style="display:flex;gap:6px;">
+              <button class="btn btn-sm btn-ghost" onclick="switchTestiTab('pending',this)"  id="tbtn-pending" >En attente <span id="pendingCount"></span></button>
+              <button class="btn btn-sm btn-ghost" onclick="switchTestiTab('approved',this)" id="tbtn-approved">Publiés <span id="approvedCount"></span></button>
+              <button class="btn btn-sm btn-ghost" onclick="switchTestiTab('refused',this)"  id="tbtn-refused" >Refusés</button>
+            </div>
+          </div>
+          <div style="padding:0 20px 20px;">
+            <div id="testi-pending"></div>
+            <div id="testi-approved" style="display:none"></div>
+            <div id="testi-refused"  style="display:none"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TARIFICATION -->
+      <div id="tab-pricing" class="tab-panel">
+        <div class="section-hdr"><h2>Tarification</h2><p>Modifiez les prix ici — la Landing Page se met à jour automatiquement</p></div>
+        <div class="pricing-wrap">
+          <div class="pricing-card">
+            <h3>Configuration des prix</h3>
+            <div class="form-group"><label class="form-label">Prix normal (FCFA)</label><input type="number" class="form-input" id="pNormal" placeholder="2000" min="0" oninput="previewPricing()" /></div>
+            <div class="toggle-row">
+              <div><div class="toggle-label">Promotion active</div><div class="toggle-sub">Affiche le prix barré et la promo</div></div>
+              <label class="toggle-sw"><input type="checkbox" id="pPromoOn" onchange="previewPricing()" /><span class="toggle-track"></span></label>
+            </div>
+            <div class="form-group"><label class="form-label">Prix promotionnel (FCFA)</label><input type="number" class="form-input" id="pPromo" placeholder="2000" min="0" oninput="previewPricing()" /><div style="font-size:.72rem;color:#94A3B8;margin-top:4px;">Appliqué uniquement si la promotion est active — sinon le Prix normal est facturé</div></div>
+            <div class="form-group"><label class="form-label">Badge promotion</label><input type="text" class="form-input" id="pBadge" placeholder="Ex: OFFRE LIMITÉE · -70% · FLASH SALE" maxlength="30" oninput="previewPricing()" /></div>
+            <button class="btn btn-primary" onclick="savePricing()" style="width:100%;justify-content:center;margin-top:4px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Mettre à jour
+            </button>
+            <div id="pricingOK" style="display:none;text-align:center;font-size:.8rem;font-weight:700;color:#16A34A;margin-top:10px;">✓ Prix mis à jour — Landing Page actualisée</div>
+          </div>
+          <div>
+            <div class="pricing-card">
+              <h3>Aperçu Landing Page</h3>
+              <div class="pricing-preview">
+                <div class="preview-label">Tel qu'affiché sur le site</div>
+                <div id="pvBadge" class="preview-badge" style="display:none">PROMO</div>
+                <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
+                  <span id="pvCrossed" class="preview-price-crossed" style="display:none"></span>
+                  <span id="pvPrice"   class="preview-price-normal">2 000 FCFA</span>
+                </div>
+                <div style="font-size:.8rem;color:#64748B;margin-top:8px;" id="pvLibCount">5 bibliothèques · Accès illimité · À vie</div>
+              </div>
+              <div class="genius-box" style="margin-top:14px;">
+                <div class="genius-box-label">Genius Pay</div>
+                <div class="genius-box-val">Montant facturé : <strong id="pvGenius">2 000 FCFA</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════ PARAMÈTRES GÉNÉRAUX ═══════════ -->
+      <div id="tab-settings" class="tab-panel">
+        <div class="section-hdr"><h2>Paramètres</h2><p>Informations générales et état des intégrations</p></div>
+
+        <div class="pricing-wrap">
+          <div class="pricing-card">
+            <h3>Informations générales</h3>
+            <div class="form-group"><label class="form-label">Nom du site</label><input type="text" class="form-input" id="setSiteName" placeholder="Nouvora Labs" /></div>
+            <div class="form-group"><label class="form-label">Numéro WhatsApp support</label><input type="text" class="form-input" id="setWhatsapp" placeholder="+229 01 41 44 25 86" /><div style="font-size:.72rem;color:#94A3B8;margin-top:4px;">Format international, sans espaces ni symboles (ex: 22901414425 86)</div></div>
+            <div class="form-group"><label class="form-label">Email de contact</label><input type="email" class="form-input" id="setContactEmail" placeholder="contact@nouvora.com" /></div>
+            <button class="btn btn-primary" onclick="saveSettings()" style="width:100%;justify-content:center;margin-top:4px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Enregistrer
+            </button>
+            <div id="settingsOK" style="display:none;text-align:center;font-size:.8rem;font-weight:700;color:#16A34A;margin-top:10px;">✓ Paramètres enregistrés</div>
+          </div>
+
+          <div>
+            <div class="pricing-card">
+              <h3>État des intégrations</h3>
+              <div style="display:flex;flex-direction:column;gap:12px;margin-top:6px;">
+
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:32px;height:32px;border-radius:8px;background:#ECFDF5;display:flex;align-items:center;justify-content:center;">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" width="16" height="16"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+                    </div>
+                    <div><div style="font-size:.85rem;font-weight:700;color:#0F172A;">Supabase</div><div style="font-size:.72rem;color:#94A3B8;">Base de données</div></div>
+                  </div>
+                  <span id="statusSupabase" style="font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:100px;background:#FEF3C7;color:#92400E;">Non connecté</span>
+                </div>
+
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:32px;height:32px;border-radius:8px;background:#EFF6FF;display:flex;align-items:center;justify-content:center;">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" width="16" height="16"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    </div>
+                    <div><div style="font-size:.85rem;font-weight:700;color:#0F172A;">Genius Pay</div><div style="font-size:.72rem;color:#94A3B8;">Paiement</div></div>
+                  </div>
+                  <span id="statusGeniusPay" style="font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:100px;background:#FEF3C7;color:#92400E;">Mode simulation</span>
+                </div>
+
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:32px;height:32px;border-radius:8px;background:#F0FDF4;display:flex;align-items:center;justify-content:center;">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2" width="16" height="16"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                    </div>
+                    <div><div style="font-size:.85rem;font-weight:700;color:#0F172A;">Stockage local</div><div style="font-size:.72rem;color:#94A3B8;">localStorage navigateur</div></div>
+                  </div>
+                  <span style="font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:100px;background:#DCFCE7;color:#166534;">Actif</span>
+                </div>
+
+              </div>
+              <p style="font-size:.75rem;color:#94A3B8;margin-top:14px;line-height:1.5;">
+                Tant que Supabase et Genius Pay ne sont pas connectés, le site fonctionne normalement
+                en mode local — voir le README du projet pour les instructions de branchement.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<a href="https://wa.me/2290141442586?text=Bonjour,%0aje%20vous%20contacte%20depuis%20Nouvora.%0aJ%27ai%20besoin%20d%27assistance." target="_blank" rel="noopener" class="wa-fab">
+  <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.126.558 4.122 1.535 5.857L.057 23.882a.5.5 0 00.612.612l6.056-1.478A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.017-1.373l-.36-.214-3.732.91.927-3.644-.233-.376A9.818 9.818 0 012.182 12C2.182 6.567 6.567 2.182 12 2.182S21.818 6.567 21.818 12 17.433 21.818 12 21.818z"/></svg>
+</a>
+
+<script>
+const USERS_KEY='nouvora_admin_users',RESOURCES_KEY='nouvora_admin_resources',PAYMENTS_KEY='nouvora_admin_payments',TESTI_KEY='nouvora_testimonials',CAPTURES_KEY='nouvora_captures',PRICING_KEY='nouvora_pricing';
+function getUsers(){try{return JSON.parse(localStorage.getItem(USERS_KEY))||[];}catch{return[];}}
+function saveUsers(u){localStorage.setItem(USERS_KEY,JSON.stringify(u));}
+function getResources(){try{return JSON.parse(localStorage.getItem(RESOURCES_KEY))||defaultResources;}catch{return defaultResources;}}
+function saveResources(r){localStorage.setItem(RESOURCES_KEY,JSON.stringify(r));}
+function getPayments(){try{return JSON.parse(localStorage.getItem(PAYMENTS_KEY))||[];}catch{return[];}}
+function getTestimonials(){try{return JSON.parse(localStorage.getItem(TESTI_KEY))||[];}catch{return[];}}
+function saveTestimonials(t){localStorage.setItem(TESTI_KEY,JSON.stringify(t));}
+function getCaptures(){try{return JSON.parse(localStorage.getItem(CAPTURES_KEY))||[];}catch{return[];}}
+function saveCaptures(c){localStorage.setItem(CAPTURES_KEY,JSON.stringify(c));}
+function getPricing(){try{return JSON.parse(localStorage.getItem(PRICING_KEY))||{prixNormal:2000,promoActive:false,prixPromo:2000,badgePromo:'PROMO'};}catch{return{prixNormal:2000,promoActive:false,prixPromo:2000,badgePromo:'PROMO'};}}
+function savePricingData(p){localStorage.setItem(PRICING_KEY,JSON.stringify(p));}
+
+const defaultResources=[
+  {id:1,num:'01',nom:'Méga Ressources',desc:'La bibliothèque la plus complète.',lien:'https://drive.google.com/file/d/1N493nBLFPrbFsac0-hqdp3thTdYjxbR1/view?usp=drivesdk'},
+  {id:2,num:'02',nom:'Kit Business en Ligne',desc:"Tout pour lancer une activité rentable.",lien:'https://drive.google.com/file/d/1MxBz0lxGp_wHfBRHsVIh6Yz7rf3Sr5ua/view?usp=drivesdk'},
+  {id:3,num:'03',nom:'Prompts IA',desc:'Prompts optimisés pour la productivité.',lien:'https://drive.google.com/file/d/1N6r-3J0C7JgKQPqJXz9FZ0xcSDQ6XktF/view?usp=drivesdk'},
+  {id:4,num:'04',nom:'Logiciels',desc:'Logiciels professionnels sélectionnés.',lien:'https://drive.google.com/file/d/1Mj_b4S9lneIgydSsh8RE_3zuhW5nnoT7/view?usp=drivesdk'},
+  {id:5,num:'05',nom:'Première Vente en Ligne',desc:'Guide pour décrocher ses premiers revenus.',lien:'https://drive.google.com/file/d/1NEUfGc23KROQ-zSIYVVWoX_l1bt8y_aZ/view?usp=drivesdk'},
+  {id:6,num:'06',nom:'500 Idées de Business',desc:'Banque géante d\'idées de business prêtes à lancer, triées par secteur.',lien:'https://drive.google.com/file/d/1OpAY1ZSQZS6vP0ETeuS_rr-hZxVbrLt8/view?usp=drivesdk'},
+];
+const COLORS=['#7C3AED','#059669','#DC2626','#2563EB','#D97706','#0891B2','#BE185D'];
+function colorFor(s){let h=0;for(let c of s||'')h=(h*31+c.charCodeAt(0))%COLORS.length;return COLORS[h];}
+function initials(n,p){return((p||'?')[0]+(n||'?')[0]).toUpperCase();}
+function formatDate(s){if(!s)return'—';return new Date(s).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'});}
+function capitalize(s){return s?s[0].toUpperCase()+s.slice(1):'';}
+function escH(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function fmtPrice(n){return Number(n||0).toLocaleString('fr-FR')+' FCFA';}
+
+const TABS={dashboard:'Dashboard',users:'Utilisateurs',resources:'Ressources',payments:'Paiements',testimonials:'Témoignages',pricing:'Tarification',settings:'Paramètres'};
+function showTab(name,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.getElementById('topbarTitle').textContent=TABS[name]||name;
+  if(btn)btn.classList.add('active');
+  ({dashboard:renderDashboard,users:renderUsers,resources:renderResources,payments:renderPayments,testimonials:renderTestimonials,pricing:renderPricing,settings:renderSettings}[name]||function(){})();
+}
+
+function renderDashboard(){
+  const users=getUsers(),pays=getPayments(),all=getTestimonials(),caps=getCaptures();
+  const premium=users.filter(u=>u.statut==='premium'||u.statut==='admin').length;
+  const revenue=pays.filter(p=>p.statut==='validé').reduce((s,p)=>s+(p.montant||0),0);
+  document.getElementById('kpiTotal').textContent=users.length;
+  document.getElementById('kpiPremium').textContent=premium;
+  document.getElementById('kpiPayments').textContent=pays.length;
+  document.getElementById('kpiRevenue').textContent=revenue.toLocaleString('fr-FR')+' FCFA';
+  document.getElementById('sidebarUserCount').textContent=users.length;
+  const pendingN=all.filter(t=>t.statut==='pending').length+caps.filter(c=>c.statut==='pending').length;
+  const sTC=document.getElementById('sidebarTestiCount');
+  sTC.textContent=pendingN;sTC.style.display=pendingN?'':'none';
+  const approved=all.filter(t=>t.statut==='approved').length+caps.filter(c=>c.statut==='published').length;
+  document.getElementById('miniApproved').textContent=approved;
+  document.getElementById('miniPending').textContent=pendingN;
+  document.getElementById('miniLibs').textContent=getResources().length;
+  document.getElementById('miniConv').textContent=(users.length?Math.round(premium/users.length*100):0)+'%';
+  const tbody=document.getElementById('recentUsersBody');
+  const recent=[...users].reverse().slice(0,5);
+  if(!recent.length){
+    tbody.innerHTML='<tr><td colspan="4" class="empty-td">Aucun utilisateur inscrit</td></tr>';
+  } else {
+    tbody.innerHTML=recent.map(u=>`<tr>
+    <td><div style="display:flex;align-items:center;gap:10px;"><div style="width:30px;height:30px;border-radius:50%;background:${colorFor(u.nom+u.prenom)};display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:white;flex-shrink:0;">${initials(u.nom,u.prenom)}</div><span style="font-weight:600;font-size:.8375rem;">${u.prenom||''} ${u.nom||''}</span></div></td>
+    <td style="font-size:.8rem;color:#64748B;">${u.email||'—'}</td>
+    <td style="font-size:.8rem;color:#64748B;">${formatDate(u.date)}</td>
+    <td><span class="badge ${u.statut==='premium'?'badge-blue':u.statut==='admin'?'badge-purple':'badge-subtle'}">${capitalize(u.statut||'visiteur')}</span></td>
+  </tr>`).join('');
+  }
+  renderChart(users);
+  renderActivityFeed(users,pays,all,caps);
+}
+
+function renderActivityFeed(users,pays,all,caps){
+  const feed=document.getElementById('activityFeed');
+  if(!feed)return;
+
+  const events=[];
+  users.forEach(u=>events.push({type:'user',date:u.date,label:`${u.prenom||''} ${u.nom||''}`.trim()||'Nouveau membre',detail:'s\'est inscrit(e)',icon:'user'}));
+  pays.filter(p=>p.statut==='validé').forEach(p=>events.push({type:'payment',date:p.date,label:p.nom||p.email||'Client',detail:`a payé ${(p.montant||0).toLocaleString('fr-FR')} FCFA`,icon:'payment'}));
+  all.forEach(t=>events.push({type:'testi',date:t.date,label:t.nom||'Un membre',detail:t.statut==='approved'?'témoignage publié':t.statut==='pending'?'a laissé un témoignage':'témoignage refusé',icon:'testi'}));
+
+  events.sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
+  const recent=events.slice(0,8);
+
+  if(!recent.length){
+    feed.innerHTML='<div class="empty-td" style="padding:24px;">Aucune activité pour le moment</div>';
+    return;
+  }
+
+  const icons={
+    user:   '<svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" width="15" height="15"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>',
+    payment:'<svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" width="15" height="15"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>',
+    testi:  '<svg viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" width="15" height="15"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>',
+  };
+  const bgs={user:'#EFF6FF',payment:'#FFFBEB',testi:'#F5F3FF'};
+
+  feed.innerHTML=recent.map(e=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 20px;border-bottom:1px solid #F1F5F9;">
+      <div style="width:30px;height:30px;border-radius:50%;background:${bgs[e.type]};display:flex;align-items:center;justify-content:center;flex-shrink:0;">${icons[e.type]}</div>
+      <div style="flex:1;min-width:0;">
+        <span style="font-size:.825rem;color:#0F172A;"><strong>${escH(e.label)}</strong> ${escH(e.detail)}</span>
+      </div>
+      <span style="font-size:.72rem;color:#94A3B8;white-space:nowrap;">${formatDate(e.date)}</span>
+    </div>
+  `).join('');
+}
+
+function renderChart(users){
+  const wrap=document.querySelector('#tab-dashboard .chart-wrap');
+  if(!wrap)return;
+  if(!users.length){
+    wrap.innerHTML='<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;color:#94A3B8;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="36" height="36"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.1-2.8-2.8L7 14"/></svg><p style="font-size:.82rem;font-weight:600;">Aucune inscription pour le moment</p><p style="font-size:.74rem;">Le graphique s\'animera dès vos premiers membres</p></div>';
+    return;
+  }
+  if(!document.getElementById('inscriptionsChart')){wrap.innerHTML='<canvas id="inscriptionsChart"></canvas>';}
+  const canvas=document.getElementById('inscriptionsChart');
+  const ctx=canvas.getContext('2d');
+  const days=[],counts=[];
+  for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push(d.toLocaleDateString('fr-FR',{weekday:'short'}));const ds=d.toISOString().slice(0,10);counts.push(users.filter(u=>(u.date||'').slice(0,10)===ds).length);}
+  canvas.width=canvas.offsetWidth||400;canvas.height=canvas.offsetHeight||220;
+  const W=canvas.width,H=canvas.height,pad={t:20,r:16,b:36,l:36};
+  const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b,maxV=Math.max(...counts,1);
+  ctx.clearRect(0,0,W,H);
+  ctx.strokeStyle='#F1F5F9';ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){const y=pad.t+cH-(i/4)*cH;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cW,y);ctx.stroke();ctx.fillStyle='#94A3B8';ctx.font='10px Inter,sans-serif';ctx.textAlign='right';ctx.fillText(Math.round(i/4*maxV),pad.l-5,y+4);}
+  const bW=cW/days.length*0.55,gap=cW/days.length;
+  days.forEach((label,i)=>{
+    const x=pad.l+i*gap+gap*0.225,bH=counts[i]?(counts[i]/maxV)*cH:2,y=pad.t+cH-bH;
+    const g=ctx.createLinearGradient(0,y,0,y+bH);g.addColorStop(0,'#2563EB');g.addColorStop(1,'#93C5FD');
+    ctx.fillStyle=g;ctx.beginPath();
+    if(ctx.roundRect)ctx.roundRect(x,y,bW,bH,[4,4,0,0]);else ctx.rect(x,y,bW,bH);
+    ctx.fill();
+    ctx.fillStyle='#94A3B8';ctx.font='10px Inter,sans-serif';ctx.textAlign='center';ctx.fillText(label,x+bW/2,pad.t+cH+16);
+    if(counts[i]>0){ctx.fillStyle='#0F172A';ctx.font='bold 10px Inter,sans-serif';ctx.fillText(counts[i],x+bW/2,y-4);}
+  });
+}
+
+function renderUsers(f=''){
+  const users=getUsers().filter(u=>!f||(u.nom+u.prenom+u.email).toLowerCase().includes(f));
+  const tbody=document.getElementById('usersTableBody');
+  if(!users.length){tbody.innerHTML='<tr><td colspan="6" class="empty-td">Aucun utilisateur</td></tr>';return;}
+  tbody.innerHTML=users.map(u=>`<tr style="cursor:pointer;" onclick="openUserDetail(${u.id})">
+    <td><strong>${u.nom||'—'}</strong></td><td>${u.prenom||'—'}</td>
+    <td style="font-size:.8rem;color:#64748B;">${u.email||'—'}</td>
+    <td style="font-size:.8rem;color:#64748B;">${formatDate(u.date)}</td>
+    <td><span class="badge ${u.statut==='premium'?'badge-blue':u.statut==='admin'?'badge-purple':'badge-subtle'}">${capitalize(u.statut||'visiteur')}</span></td>
+    <td><select class="role-select" onclick="event.stopPropagation()" onchange="changeRole(${u.id},this.value)">
+      <option value="visiteur" ${(u.statut||'visiteur')==='visiteur'?'selected':''}>Visiteur</option>
+      <option value="premium" ${u.statut==='premium'?'selected':''}>Premium</option>
+      <option value="admin" ${u.statut==='admin'?'selected':''}>Admin</option>
+    </select></td></tr>`).join('');
+}
+function filterUsers(){renderUsers(document.getElementById('userSearch').value.toLowerCase());}
+function changeRole(id,r){const u=getUsers(),f=u.find(x=>x.id===id);if(f){f.statut=r;saveUsers(u);renderUsers(document.getElementById('userSearch').value.toLowerCase());renderDashboard();}}
+
+function openUserDetail(id){
+  const u=getUsers().find(x=>x.id===id);
+  if(!u)return;
+  const pays=getPayments().filter(p=>p.email===u.email);
+  const totalPaid=pays.filter(p=>p.statut==='validé').reduce((s,p)=>s+(p.montant||0),0);
+
+  document.getElementById('userDetailContent').innerHTML=`
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
+      <div style="width:48px;height:48px;border-radius:50%;background:${colorFor(u.nom+u.prenom)};display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:white;flex-shrink:0;">${initials(u.nom,u.prenom)}</div>
+      <div>
+        <div style="font-size:1.05rem;font-weight:800;color:#0F172A;">${escH(u.prenom)} ${escH(u.nom)}</div>
+        <div style="font-size:.82rem;color:#64748B;">${escH(u.email)}</div>
+      </div>
+      <span style="margin-left:auto;" class="badge ${u.statut==='premium'?'badge-blue':u.statut==='admin'?'badge-purple':'badge-subtle'}">${capitalize(u.statut||'visiteur')}</span>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
+      <div style="background:#F8FAFC;border-radius:10px;padding:14px;">
+        <div style="font-size:.7rem;color:#94A3B8;font-weight:600;text-transform:uppercase;">Inscrit le</div>
+        <div style="font-size:.9rem;font-weight:700;color:#0F172A;margin-top:4px;">${formatDate(u.date)}</div>
+      </div>
+      <div style="background:#F8FAFC;border-radius:10px;padding:14px;">
+        <div style="font-size:.7rem;color:#94A3B8;font-weight:600;text-transform:uppercase;">Total payé</div>
+        <div style="font-size:.9rem;font-weight:700;color:#0F172A;margin-top:4px;">${totalPaid.toLocaleString('fr-FR')} FCFA</div>
+      </div>
+    </div>
+
+    <div style="font-size:.8rem;font-weight:700;color:#475569;margin-bottom:10px;">Historique des paiements</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">
+      ${pays.length?pays.map(p=>`
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#F8FAFC;border-radius:9px;">
+          <span style="font-size:.82rem;color:#0F172A;font-weight:600;">${(p.montant||0).toLocaleString('fr-FR')} FCFA</span>
+          <span style="font-size:.75rem;color:#94A3B8;">${formatDate(p.date)}</span>
+          <span class="badge ${p.statut==='validé'?'badge-green':'badge-subtle'}" style="font-size:.68rem;">${capitalize(p.statut||'—')}</span>
+        </div>
+      `).join(''):'<div style="font-size:.8rem;color:#94A3B8;padding:8px 0;">Aucun paiement enregistré</div>'}
+    </div>
+
+    <div style="display:flex;gap:10px;">
+      <select class="role-select" style="flex:1;" onchange="changeRole(${u.id},this.value);openUserDetail(${u.id})">
+        <option value="visiteur" ${(u.statut||'visiteur')==='visiteur'?'selected':''}>Visiteur</option>
+        <option value="premium" ${u.statut==='premium'?'selected':''}>Premium</option>
+        <option value="admin" ${u.statut==='admin'?'selected':''}>Admin</option>
+      </select>
+    </div>
+  `;
+  document.getElementById('userDetailOverlay').style.display='flex';
+}
+function closeUserDetail(){document.getElementById('userDetailOverlay').style.display='none';}
+
+function renderResources(){
+  document.getElementById('resourcesGrid').innerHTML=getResources().map(r=>`
+    <div class="res-card"><h4>${escH(r.nom)}</h4>
+      <div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="rn-${r.id}" value="${escH(r.nom)}" /></div>
+      <div class="form-group"><label class="form-label">Description</label><textarea class="form-input" id="rd-${r.id}" rows="2">${escH(r.desc)}</textarea></div>
+      <div class="form-group"><label class="form-label">Lien Drive</label><input class="form-input" id="rl-${r.id}" value="${escH(r.lien)}" /></div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn-primary btn-sm" onclick="saveResource(${r.id})">Enregistrer</button>
+        <span id="rf-${r.id}" class="save-ok"></span>
+      </div></div>`).join('');
+}
+function saveResource(id){const res=getResources(),r=res.find(x=>x.id===id);if(r){r.nom=document.getElementById(`rn-${id}`).value;r.desc=document.getElementById(`rd-${id}`).value;r.lien=document.getElementById(`rl-${id}`).value;saveResources(res);const fb=document.getElementById(`rf-${id}`);fb.textContent='✓ Sauvegardé';fb.classList.add('show');setTimeout(()=>fb.classList.remove('show'),2500);}}
+
+let _payStatusFilter='all';
+function setPayFilter(status,btn){
+  _payStatusFilter=status;
+  document.querySelectorAll('.pay-filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  filterPayments();
+}
+function renderPayments(f=''){
+  let pays=getPayments().filter(p=>!f||(p.nom+p.email).toLowerCase().includes(f));
+  if(_payStatusFilter!=='all'){pays=pays.filter(p=>(p.statut||'en attente')===_payStatusFilter);}
+  const sortDir=document.getElementById('paySort')?.value||'desc';
+  pays=[...pays].sort((a,b)=>sortDir==='desc'?new Date(b.date||0)-new Date(a.date||0):new Date(a.date||0)-new Date(b.date||0));
+  const pc=document.getElementById('sidebarPayCount');pc.textContent=getPayments().length;pc.style.display=getPayments().length?'':'none';
+  const tbody=document.getElementById('paymentsTableBody');
+  if(!pays.length){tbody.innerHTML='<tr><td colspan="5" class="empty-td">Aucun paiement</td></tr>';return;}
+  tbody.innerHTML=pays.map(p=>`<tr>
+    <td><strong>${p.nom||'—'}</strong></td>
+    <td style="font-size:.8rem;color:#64748B;">${p.email||'—'}</td>
+    <td style="font-weight:700;">${(p.montant||0).toLocaleString('fr-FR')} FCFA</td>
+    <td style="font-size:.8rem;color:#64748B;">${formatDate(p.date)}</td>
+    <td><span class="badge ${p.statut==='validé'?'badge-green':'badge-amber'}">${capitalize(p.statut||'en attente')}</span></td>
+  </tr>`).join('');
+}
+function filterPayments(){renderPayments(document.getElementById('paySearch').value.toLowerCase());}
+
+/* CAPTURES */
+function handleDragOver(e){e.preventDefault();document.getElementById('uploadZone').classList.add('drag-over');}
+function handleDragLeave(e){document.getElementById('uploadZone').classList.remove('drag-over');}
+function handleDrop(e){e.preventDefault();document.getElementById('uploadZone').classList.remove('drag-over');handleFiles(Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/')));}
+function handleFileSelect(e){handleFiles(Array.from(e.target.files));e.target.value='';}
+function handleFiles(files){
+  const caps=getCaptures();let done=0;
+  files.forEach(file=>{const r=new FileReader();r.onload=ev=>{caps.push({id:Date.now()+done,src:ev.target.result,statut:'pending',date:new Date().toISOString().slice(0,10)});done++;if(done===files.length){saveCaptures(caps);renderCaptures();}};r.readAsDataURL(file);});
+}
+function renderCaptures(){
+  const caps=getCaptures();const grid=document.getElementById('capturesGrid');const act=document.getElementById('capturesActions');
+  if(!caps.length){grid.innerHTML='';if(act)act.style.display='none';return;}
+  if(act)act.style.display='flex';
+  grid.innerHTML=caps.map(c=>`<div class="cap-item">
+    <img src="${c.src}" alt="Témoignage" />
+    <span class="cap-status ${c.statut==='published'?'published':'pending'}">${c.statut==='published'?'Publié':'En attente'}</span>
+    <div class="cap-overlay">
+      ${c.statut!=='published'?`<button class="btn btn-sm btn-success" onclick="updateCap(${c.id},'published')">Publier</button>`
+        :`<button class="btn btn-sm btn-warning" onclick="updateCap(${c.id},'pending')">Masquer</button>`}
+      <button class="btn btn-sm btn-danger" onclick="deleteCap(${c.id})" title="Supprimer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
+    </div></div>`).join('');
+}
+function updateCap(id,s){const c=getCaptures(),f=c.find(x=>x.id===id);if(f){f.statut=s;saveCaptures(c);renderCaptures();}}
+function deleteCap(id){if(!confirm('Supprimer cette capture ?'))return;saveCaptures(getCaptures().filter(c=>c.id!==id));renderCaptures();}
+function publishAllNew(){const c=getCaptures();c.forEach(x=>{if(x.statut==='pending')x.statut='published';});saveCaptures(c);renderCaptures();}
+
+/* TESTI TEXTUELS */
+function renderTestimonials(){
+  const all=getTestimonials();
+  const p=all.filter(t=>t.statut==='pending'),ap=all.filter(t=>t.statut==='approved'),rf=all.filter(t=>t.statut==='refused');
+  document.getElementById('pendingCount').textContent=p.length?`(${p.length})`:'';
+  document.getElementById('approvedCount').textContent=ap.length?`(${ap.length})`:'';
+  renderTestiList('testi-pending',p,true,false);renderTestiList('testi-approved',ap,false,true);renderTestiList('testi-refused',rf,false,false);
+  renderCaptures();
+}
+function renderTestiList(id,list,canApp,canRef){
+  const el=document.getElementById(id);if(!el)return;
+  if(!list.length){el.innerHTML='<p style="color:#94A3B8;padding:16px 0;font-size:.875rem;">Aucun témoignage.</p>';return;}
+  el.innerHTML=list.map(t=>`<div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:12px 14px;margin-bottom:10px;">
+    <div style="display:flex;justify-content:space-between;gap:12px;margin-bottom:6px;">
+      <strong style="font-size:.875rem;">${escH(t.nom||'—')}</strong>
+      <div style="display:flex;gap:5px;flex-shrink:0;">
+        ${canApp?`<button class="btn btn-sm btn-success" onclick="moderateTesti(${t.id},'approved')">Approuver</button>`:''}
+        ${canRef?`<button class="btn btn-sm btn-danger"  onclick="moderateTesti(${t.id},'refused')">Retirer</button>`:''}
+        <button class="btn btn-sm btn-danger" onclick="deleteTesti(${t.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
+      </div>
+    </div>
+    <p style="font-size:.8375rem;color:#475569;font-style:italic;">"${escH(t.texte||'')}"</p>
+    <span style="font-size:.72rem;color:#94A3B8;">${formatDate(t.date)}</span>
+  </div>`).join('');
+}
+function moderateTesti(id,s){const all=getTestimonials(),t=all.find(x=>x.id===id);if(t){t.statut=s;saveTestimonials(all);renderTestimonials();}}
+function deleteTesti(id){if(!confirm('Supprimer ?'))return;saveTestimonials(getTestimonials().filter(t=>t.id!==id));renderTestimonials();}
+function switchTestiTab(name,btn){
+  ['pending','approved','refused'].forEach(n=>document.getElementById('testi-'+n).style.display='none');
+  document.getElementById('testi-'+name).style.display='';
+  document.querySelectorAll('#tbtn-pending,#tbtn-approved,#tbtn-refused').forEach(b=>b.style.background='#F8FAFC');
+  if(btn)btn.style.background='#EFF6FF';
+}
+
+/* TARIFICATION */
+function renderPricing(){
+  const p=getPricing();
+  document.getElementById('pNormal').value=p.prixNormal||2000;
+  document.getElementById('pPromoOn').checked=p.promoActive||false;
+  document.getElementById('pPromo').value=p.prixPromo||2000;
+  document.getElementById('pBadge').value=p.badgePromo||'PROMO';
+  previewPricing();
+}
+function previewPricing(){
+  const n=Number(document.getElementById('pNormal')?.value)||2000;
+  const on=document.getElementById('pPromoOn')?.checked;
+  const pr=Number(document.getElementById('pPromo')?.value)||2000;
+  const b=document.getElementById('pBadge')?.value||'PROMO';
+  const badgeEl=document.getElementById('pvBadge'),crossEl=document.getElementById('pvCrossed'),priceEl=document.getElementById('pvPrice'),gpEl=document.getElementById('pvGenius'),libCountEl=document.getElementById('pvLibCount');
+  if(libCountEl){const nbLibs=getResources().length;libCountEl.textContent=`${nbLibs} bibliothèque${nbLibs>1?'s':''} · Accès illimité · À vie`;}
+  if(on){
+    if(badgeEl){badgeEl.textContent=b;badgeEl.style.display='';}
+    if(crossEl){crossEl.textContent=n.toLocaleString('fr-FR')+' FCFA';crossEl.style.display='';}
+    if(priceEl){priceEl.className='preview-price-promo';priceEl.textContent=pr.toLocaleString('fr-FR')+' FCFA';}
+    if(gpEl)gpEl.textContent=pr.toLocaleString('fr-FR')+' FCFA';
+  } else {
+    if(badgeEl)badgeEl.style.display='none';
+    if(crossEl)crossEl.style.display='none';
+    if(priceEl){priceEl.className='preview-price-normal';priceEl.textContent=n.toLocaleString('fr-FR')+' FCFA';}
+    if(gpEl)gpEl.textContent=n.toLocaleString('fr-FR')+' FCFA';
+  }
+}
+function savePricing(){
+  const p={prixNormal:Number(document.getElementById('pNormal').value)||2000,promoActive:document.getElementById('pPromoOn').checked,prixPromo:Number(document.getElementById('pPromo').value)||2000,badgePromo:document.getElementById('pBadge').value||'PROMO'};
+  savePricingData(p);previewPricing();
+  const ok=document.getElementById('pricingOK');ok.style.display='block';setTimeout(()=>ok.style.display='none',3000);
+}
+
+function exportUsers(){const u=getUsers();if(!u.length){alert('Aucun utilisateur.');return;}const csv=['Nom,Prénom,Email,Date,Rôle',...u.map(x=>`${x.nom},${x.prenom},${x.email},${x.date},${x.statut}`)].join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`nouvora-users-${new Date().toISOString().slice(0,10)}.csv`;a.click();}
+
+/* ── Paramètres généraux ── */
+const SETTINGS_KEY='nouvora_settings';
+function getSettings(){try{return JSON.parse(localStorage.getItem(SETTINGS_KEY))||{siteName:'Nouvora Labs',whatsapp:'',contactEmail:''};}catch{return{siteName:'Nouvora Labs',whatsapp:'',contactEmail:''};}}
+function saveSettingsData(s){localStorage.setItem(SETTINGS_KEY,JSON.stringify(s));}
+
+function renderSettings(){
+  const s=getSettings();
+  document.getElementById('setSiteName').value=s.siteName||'Nouvora Labs';
+  document.getElementById('setWhatsapp').value=s.whatsapp||'';
+  document.getElementById('setContactEmail').value=s.contactEmail||'';
+
+  /* Statut réel des intégrations, basé sur les fichiers clients */
+  const supEl=document.getElementById('statusSupabase');
+  if(typeof isSupabaseReady==='function' && isSupabaseReady()){
+    supEl.textContent='Connecté';supEl.style.background='#DCFCE7';supEl.style.color='#166534';
+  } else {
+    supEl.textContent='Non connecté';supEl.style.background='#FEF3C7';supEl.style.color='#92400E';
+  }
+  const gpEl=document.getElementById('statusGeniusPay');
+  if(typeof isGeniusPayReady==='function' && isGeniusPayReady()){
+    gpEl.textContent='Connecté';gpEl.style.background='#DCFCE7';gpEl.style.color='#166534';
+  } else {
+    gpEl.textContent='Mode simulation';gpEl.style.background='#FEF3C7';gpEl.style.color='#92400E';
+  }
+}
+
+function saveSettings(){
+  const s={
+    siteName:document.getElementById('setSiteName').value||'Nouvora Labs',
+    whatsapp:document.getElementById('setWhatsapp').value||'',
+    contactEmail:document.getElementById('setContactEmail').value||'',
+  };
+  saveSettingsData(s);
+  const ok=document.getElementById('settingsOK');ok.style.display='block';setTimeout(()=>ok.style.display='none',3000);
+}
+
+renderDashboard();
+</script>
+</body>
+</html>

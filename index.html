@@ -1,0 +1,1812 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Nouvora Labs — Apprendre. Créer. Évoluer. Accédez à 5 grandes bibliothèques numériques premium pour entrepreneurs, créateurs et freelances francophones." />
+  <meta name="theme-color" content="#2563EB" />
+  <title>Nouvora Labs — Apprendre. Créer. Évoluer.</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+
+  <style>
+    /* ── Hero ─────────────────────────── */
+    .hero {
+      padding-top: 140px;
+      padding-bottom: 110px;
+      background: var(--bg-primary);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px; right: -200px;
+      width: 700px; height: 700px;
+      background: radial-gradient(ellipse, rgba(37,99,235,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -100px; left: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(ellipse, rgba(37,99,235,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: 0 var(--container-pad);
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--blue-light);
+      border: 1px solid rgba(37,99,235,0.2);
+      border-radius: var(--radius-full);
+      padding: 6px 16px 6px 10px;
+      margin-bottom: 32px;
+    }
+    .hero-badge-dot {
+      width: 20px; height: 20px;
+      background: var(--blue-primary);
+      border-radius: var(--radius-full);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hero-badge-dot svg { width: 11px; height: 11px; color: white; }
+    .hero-badge-text {
+      font-size: 0.75rem; font-weight: 700;
+      color: var(--blue-secondary);
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .hero-title {
+      font-size: 4rem; font-weight: 800;
+      letter-spacing: -0.045em;
+      color: var(--text-primary);
+      line-height: 1.06; margin-bottom: 10px;
+    }
+    .hero-slogan {
+      font-size: 1.5rem; font-weight: 500;
+      color: var(--blue-primary);
+      letter-spacing: 0.01em;
+      margin-bottom: 24px;
+    }
+    .hero-subtitle {
+      font-size: 1.125rem; color: var(--text-secondary);
+      line-height: 1.7; margin-bottom: 44px;
+      max-width: 580px; margin-left: auto; margin-right: auto;
+    }
+    .hero-cta {
+      display: flex; align-items: center; justify-content: center;
+      gap: 14px; flex-wrap: wrap; margin-bottom: 56px;
+    }
+    .hero-proof {
+      display: flex; align-items: center; justify-content: center;
+      gap: 20px; flex-wrap: wrap;
+    }
+    .hero-proof-item {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 0.8125rem; color: var(--text-tertiary); font-weight: 500;
+    }
+    .hero-proof-item svg { width: 14px; height: 14px; color: var(--blue-primary); }
+    .hero-proof-sep { width: 1px; height: 18px; background: var(--border-medium); }
+
+    /* ── Univers Section ──────────────── */
+    .univers-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .univers-card {
+      background: var(--bg-white);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-xl);
+      padding: 32px 28px;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition-base);
+      display: flex; flex-direction: column; gap: 16px;
+      position: relative; overflow: hidden;
+    }
+    .univers-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--card-color, var(--blue-primary));
+      opacity: 0; transition: opacity var(--transition-base);
+    }
+    .univers-card:hover {
+      box-shadow: var(--shadow-card-hover);
+      transform: translateY(-4px);
+      border-color: var(--border-medium);
+    }
+    .univers-card:hover::before { opacity: 1; }
+
+    .univers-number {
+      font-size: 0.6875rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-tertiary);
+    }
+    .univers-icon {
+      width: 52px; height: 52px;
+      border-radius: var(--radius-lg);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .univers-icon svg { width: 24px; height: 24px; }
+    .univers-name {
+      font-size: 1.125rem; font-weight: 800;
+      color: var(--text-primary); letter-spacing: -0.02em;
+      line-height: 1.25;
+    }
+    .univers-desc {
+      font-size: 0.875rem; color: var(--text-secondary);
+      line-height: 1.6; flex: 1;
+    }
+    .univers-tags {
+      display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .univers-tag {
+      font-size: 0.6875rem; font-weight: 600;
+      padding: 3px 10px; border-radius: var(--radius-full);
+      background: var(--bg-subtle); color: var(--text-secondary);
+      border: 1px solid var(--border-light);
+    }
+
+    /* ── Ce que vous obtenez ─────────── */
+    .obtient-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    }
+    .obtient-card {
+      background: var(--bg-white); border: 1px solid var(--border-light);
+      border-radius: var(--radius-xl); padding: 28px;
+      box-shadow: var(--shadow-xs); text-align: center;
+      transition: all var(--transition-base);
+    }
+    .obtient-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+    .obtient-icon {
+      width: 56px; height: 56px; border-radius: var(--radius-xl);
+      background: var(--blue-light);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .obtient-icon svg { width: 24px; height: 24px; color: var(--blue-primary); }
+    .obtient-title { font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+    .obtient-desc { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.6; }
+
+    /* ── Responsive ───────────────────── */
+    @media (max-width: 1024px) {
+      .univers-grid { grid-template-columns: repeat(2, 1fr); }
+      .obtient-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .hero-title { font-size: 2.5rem; }
+      .hero-slogan { font-size: 1.125rem; }
+      .univers-grid { grid-template-columns: 1fr; }
+      .obtient-grid { grid-template-columns: 1fr; }
+      .hero-cta { flex-direction: column; align-items: center; }
+    }
+    @media (max-width: 480px) {
+      .hero-title { font-size: 2rem; }
+      .hero { padding-top: 110px; padding-bottom: 72px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════ NAVIGATION ═══════════ -->
+  <nav class="navbar" role="navigation" aria-label="Navigation principale">
+    <div class="navbar-inner">
+      <!-- LOGO : remplacer assets/images/logo.svg par assets/images/logo.png pour votre propre logo -->
+      <a href="index.html" class="navbar-logo" aria-label="Nouvora Labs — Accueil">
+        <img src="assets/images/logo.svg" alt="Nouvora Labs"
+             style="height:36px;width:auto;display:block;"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';"
+             id="navLogoImg" />
+        <span id="navLogoFallback" style="display:none;align-items:center;gap:8px;">
+          <div class="navbar-logo-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/>
+              <line x1="12" y1="22" x2="12" y2="15.5"/>
+              <polyline points="22 8.5 12 15.5 2 8.5"/>
+            </svg>
+          </div>
+          <span class="navbar-logo-text">Nouvora <span>Labs</span></span>
+        </span>
+      </a>
+      <div class="navbar-links">
+        <a href="#univers">Nos univers</a>
+        <a href="#avantages">Avantages</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div class="navbar-actions">
+        <a href="#" onclick="openLoginModal();return false;" class="navbar-login">Connexion</a>
+        <button onclick="openAccessModal()" class="btn btn-primary btn-sm">Accéder à Nouvora</button>
+      </div>
+      <button class="hamburger" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" role="dialog" aria-label="Menu mobile">
+    <a href="#univers">Nos univers</a>
+    <a href="#avantages">Avantages</a>
+    <a href="#faq">FAQ</a>
+    <div class="mobile-menu-actions">
+      <a href="#" onclick="openLoginModal();return false;" class="btn btn-secondary btn-full">Connexion</a>
+      <button onclick="openAccessModal()" class="btn btn-primary btn-full" style="width:100%;justify-content:center;">Accéder à Nouvora</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ HERO ═══════════ -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-inner">
+
+      <div class="hero-badge hero-animate-badge">
+        <div class="hero-badge-dot" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/>
+          </svg>
+        </div>
+        <span class="hero-badge-text">5 bibliothèques numériques · Accès immédiat</span>
+      </div>
+
+      <h1 class="hero-title hero-animate-title" id="hero-title">
+        Nouvora <span class="highlight">Labs</span>
+      </h1>
+      <p class="hero-slogan hero-animate-sub">Apprendre. Créer. Évoluer.</p>
+
+      <p class="hero-subtitle hero-animate-sub">
+        Un portail premium donnant accès à 5 grandes bibliothèques numériques — ressources, outils, prompts IA, logiciels et bonus — pour entrepreneurs, créateurs et freelances francophones.
+      </p>
+
+      <!-- Présentation de l'offre : texte + prix + bouton -->
+      <div style="margin-bottom:28px;">
+        <p style="font-size:.9375rem;font-weight:500;color:var(--text-secondary);margin-bottom:6px;">Accédez à plus de 300 formations, logiciels et ressources</p>
+        <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
+          <span id="hero-price-badge" style="display:none;font-size:.7rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#fff;background:#DC2626;padding:4px 10px;border-radius:100px;">PROMO</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
+          <span id="hero-price-crossed" style="display:none;font-size:1.15rem;font-weight:600;color:var(--text-tertiary);text-decoration:line-through;"></span>
+          <span id="hero-price-normal" style="font-size:2rem;font-weight:900;color:var(--text-primary);letter-spacing:-.04em;">2 000 FCFA</span>
+          <span id="hero-price-promo-value" style="display:none;font-size:2rem;font-weight:900;color:var(--text-primary);letter-spacing:-.04em;"></span>
+        </div>
+        <div class="hero-cta hero-animate-cta">
+          <button onclick="openAccessModal()" class="btn btn-primary btn-xl">
+            Accéder à Nouvora
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+
+
+      <div class="hero-proof hero-animate-proof">
+        <div class="hero-proof-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Accès sécurisé
+        </div>
+        <div class="hero-proof-sep" aria-hidden="true"></div>
+        <div class="hero-proof-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Sans engagement
+        </div>
+        <div class="hero-proof-sep" aria-hidden="true"></div>
+        <div class="hero-proof-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          Accès immédiat après inscription
+        </div>
+        <div class="hero-proof-sep" aria-hidden="true"></div>
+        <div class="hero-proof-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Mis à jour régulièrement
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════ 5 UNIVERS ═══════════ -->
+  <section class="section" id="univers">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="badge badge-blue" style="margin-bottom:16px;">5 univers complets</span>
+        <h2>Tout ce dont vous avez besoin, au même endroit</h2>
+        <p>Cinq bibliothèques numériques soigneusement constituées pour couvrir tous les aspects de votre développement professionnel et créatif.</p>
+      </div>
+
+      <div class="univers-grid">
+
+        <!-- 1 Méga Ressources -->
+        <div class="univers-card reveal delay-1" style="--card-color:#2563EB;">
+          <p class="univers-number">Bibliothèque 01</p>
+          <!-- EMPLACEMENT BANNIÈRE 1:1 — Méga Ressources (1080x1080 recommandé) -->
+          <div class="lib-banner-slot" id="banner-mega">
+            <div class="banner-placeholder">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+              <span>Bannière Méga Ressources<br/>1080 × 1080 px</span>
+            </div>
+          </div>
+          <div class="univers-icon" style="background:#EFF6FF;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+          </div>
+          <p class="univers-name">Méga Ressources</p>
+          <p class="univers-desc">Une vaste bibliothèque regroupant des formations, ebooks, livres audio, ressources professionnelles et contenus éducatifs dans de nombreux domaines.</p>
+          <div class="univers-tags">
+            <span class="univers-tag">Photoshop</span>
+            <span class="univers-tag">Illustrator</span>
+            <span class="univers-tag">InDesign</span>
+            <span class="univers-tag">After Effects</span>
+            <span class="univers-tag">Premiere Pro</span>
+            <span class="univers-tag">Canva</span>
+            <span class="univers-tag">Google Ads</span>
+            <span class="univers-tag">Community Management</span>
+            <span class="univers-tag">Excel Expert</span>
+            <span class="univers-tag">PowerPoint</span>
+            <span class="univers-tag">Développement Web</span>
+            <span class="univers-tag">Full Stack Dev</span>
+            <span class="univers-tag">Anglais Pro</span>
+            <span class="univers-tag">Cryptomonnaies</span>
+            <span class="univers-tag">Livres Audio</span>
+          </div>
+          <p style="font-size:.8125rem;font-weight:700;color:#2563EB;margin-top:10px;">+185 autres formations incluses</p>
+        </div>
+
+        <!-- 2 Kit Business -->
+        <div class="univers-card reveal delay-2" style="--card-color:#059669;">
+          <p class="univers-number">Bibliothèque 02</p>
+          <!-- EMPLACEMENT BANNIÈRE 1:1 — Kit Business (1080x1080 recommandé) -->
+          <div class="lib-banner-slot" id="banner-kit">
+            <div class="banner-placeholder">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+              <span>Bannière Kit Business<br/>1080 × 1080 px</span>
+            </div>
+          </div>
+          <div class="univers-icon" style="background:#ECFDF5;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+              <polyline points="17 6 23 6 23 12"/>
+            </svg>
+          </div>
+          <p class="univers-name">Kit Business en Ligne</p>
+          <p class="univers-desc">Une collection de ressources destinées aux entrepreneurs, freelances et créateurs souhaitant développer une activité rentable sur Internet.</p>
+          <div class="univers-tags">
+            <span class="univers-tag">ChatGPT</span>
+            <span class="univers-tag">Facebook Ads</span>
+            <span class="univers-tag">Shopify</span>
+            <span class="univers-tag">WordPress</span>
+            <span class="univers-tag">Python</span>
+            <span class="univers-tag">Trading</span>
+            <span class="univers-tag">Midjourney</span>
+            <span class="univers-tag">Dropshipping</span>
+            <span class="univers-tag">TikTok Marketing</span>
+            <span class="univers-tag">Affiliation</span>
+            <span class="univers-tag">Tunnels de vente</span>
+            <span class="univers-tag">DaVinci Resolve</span>
+          </div>
+          <p style="font-size:.8125rem;font-weight:700;color:#059669;margin-top:10px;">35+ formations incluses</p>
+        </div>
+
+        <!-- 3 Prompts IA -->
+        <div class="univers-card reveal delay-3" style="--card-color:#7C3AED;">
+          <p class="univers-number">Bibliothèque 03</p>
+          <div class="univers-icon" style="background:#F5F3FF;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+            </svg>
+          </div>
+          <p class="univers-name">Prompts IA</p>
+          <p class="univers-desc">Bibliothèque de prompts et ressources IA permettant d'améliorer la productivité, le marketing, la création de contenu et le développement de projets numériques.</p>
+          <div class="univers-tags">
+            <span class="univers-tag">ChatGPT</span>
+            <span class="univers-tag">Midjourney</span>
+            <span class="univers-tag">Productivité IA</span>
+            <span class="univers-tag">Marketing IA</span>
+            <span class="univers-tag">Création de contenu</span>
+          </div>
+        </div>
+
+        <!-- 4 Logithèque -->
+        <div class="univers-card reveal delay-4" style="--card-color:#EA580C;">
+          <p class="univers-number">Bibliothèque 04</p>
+          <!-- EMPLACEMENT BANNIÈRE 1:1 — Logithèque Premium (1080x1080 recommandé) -->
+          <div class="lib-banner-slot" id="banner-logi">
+            <div class="banner-placeholder">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+              <span>Bannière Logithèque Premium<br/>1080 × 1080 px</span>
+            </div>
+          </div>
+          <div class="univers-icon" style="background:#FFF7ED;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#EA580C" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/>
+              <line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+          </div>
+          <p class="univers-name">Logithèque Premium</p>
+          <p class="univers-desc">Collection de logiciels, outils numériques, utilitaires et systèmes d'exploitation destinés aux créateurs, entrepreneurs et professionnels.</p>
+          <div class="univers-tags">
+            <span class="univers-tag">Logiciels création</span>
+            <span class="univers-tag">Suite bureautique</span>
+            <span class="univers-tag">Outils design</span>
+            <span class="univers-tag">Utilitaires système</span>
+            <span class="univers-tag">Productivité</span>
+            <span class="univers-tag">Sécurité</span>
+            <span class="univers-tag">Développement</span>
+          </div>
+          <p style="font-size:.8125rem;font-weight:700;color:#EA580C;margin-top:10px;">50+ outils et logiciels inclus</p>
+        </div>
+
+        <!-- 5 Bonus -->
+        <div class="univers-card reveal delay-5" style="--card-color:#D97706;">
+          <p class="univers-number">Bibliothèque 05</p>
+          <div class="univers-icon" style="background:#FFFBEB;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          </div>
+          <p class="univers-name">Bonus & Mises à Jour</p>
+          <p class="univers-desc">Section réservée aux bonus, nouvelles ressources, mises à jour et contenus exclusifs ajoutés régulièrement pour les membres actifs.</p>
+          <div class="univers-tags">
+            <span class="univers-tag">Contenus exclusifs</span>
+            <span class="univers-tag">Nouvelles ressources</span>
+            <span class="univers-tag">Mises à jour</span>
+            <span class="univers-tag">Surprises membres</span>
+          </div>
+        </div><!-- /univers-card Bonus -->
+
+        <!-- 6 — 500 Idées de Business -->
+        <div class="univers-card reveal delay-6" style="--card-color:#DC2626;">
+          <p class="univers-number">Bibliothèque 06</p>
+          <!-- EMPLACEMENT BANNIÈRE 1:1 — 500 Idées (1080x1080 recommandé) -->
+          <div class="lib-banner-slot" id="banner-idees">
+            <div class="banner-placeholder">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+              <span>Bannière 500 Idées<br/>1080 × 1080 px</span>
+            </div>
+          </div>
+          <div class="univers-icon" style="background:#FEF2F2;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+              <circle cx="12" cy="12" r="4"/>
+            </svg>
+          </div>
+          <p class="univers-name">500 Idées de Business Rentables</p>
+          <p class="univers-desc">Une banque géante d'idées de business prêtes à lancer, triées par secteur — pour ne plus jamais manquer d'inspiration pour démarrer ou diversifier votre activité.</p>
+          <div class="univers-tags">
+            <span class="univers-tag">E-commerce &amp; Dropshipping</span>
+            <span class="univers-tag">Import-Export</span>
+            <span class="univers-tag">Mobile Money (Orange/MTN)</span>
+            <span class="univers-tag">Investir en Bourse (BRVM)</span>
+            <span class="univers-tag">Immobilier &amp; Terrains</span>
+            <span class="univers-tag">Agences de Livraison</span>
+          </div>
+          <p style="font-size:.8125rem;font-weight:700;color:#DC2626;margin-top:10px;">+494 autres idées rentables incluses</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ CE QUE VOUS OBTENEZ ═══════════ -->
+  <section class="section bg-white" id="avantages" style="border-top:1px solid var(--border-light); border-bottom:1px solid var(--border-light);">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="badge badge-subtle" style="margin-bottom:16px;">Après votre inscription</span>
+        <h2>Ce que vous obtenez avec Nouvora Labs</h2>
+        <p>Un accès structuré, immédiat et durable à tout ce qu'il faut pour progresser, créer et développer votre activité numérique.</p>
+      </div>
+
+      <div class="obtient-grid">
+
+        <div class="obtient-card reveal delay-1">
+          <div class="obtient-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <p class="obtient-title">Accès immédiat aux 5 bibliothèques</p>
+          <p class="obtient-desc">Dès la création de votre compte, vous accédez à l'intégralité des 5 univers depuis votre tableau de bord personnel.</p>
+        </div>
+
+        <div class="obtient-card reveal delay-2">
+          <div class="obtient-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </div>
+          <p class="obtient-title">Plus de 300 formations et ressources</p>
+          <p class="obtient-desc">Accédez à un catalogue riche de formations, logiciels, outils professionnels et ressources numériques soigneusement organisés pour accélérer votre apprentissage et vos résultats.</p>
+        </div>
+
+        <div class="obtient-card reveal delay-3">
+          <div class="obtient-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <p class="obtient-title">Mises à jour régulières</p>
+          <p class="obtient-desc">Les bibliothèques évoluent en permanence. De nouveaux contenus et bonus sont ajoutés régulièrement pour les membres actifs.</p>
+        </div>
+
+        <div class="obtient-card reveal delay-4">
+          <div class="obtient-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <p class="obtient-title">Plateforme sécurisée</p>
+          <p class="obtient-desc">Votre accès est personnel et sécurisé. Vos données sont protégées et votre tableau de bord vous est exclusivement réservé.</p>
+        </div>
+
+        <div class="obtient-card reveal delay-5">
+          <div class="obtient-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          </div>
+          <p class="obtient-title">Accessible sur tous vos appareils</p>
+          <p class="obtient-desc">Accédez à Nouvora Labs depuis votre ordinateur, tablette ou smartphone. L'interface s'adapte à tous les écrans.</p>
+        </div>
+
+        <!-- Droit de revente -->
+        <div class="obtient-card reveal delay-1">
+          <div class="obtient-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="16"/>
+              <line x1="8" y1="12" x2="16" y2="12"/>
+            </svg>
+          </div>
+          <p class="obtient-title">Droit de revente inclus sur l'ensemble des ressources</p>
+          <p class="obtient-desc">Revendez les formations, logiciels et ressources et créez une nouvelle source de revenus.</p>
+        </div>
+
+        <div class="obtient-card reveal delay-6">
+          <div class="obtient-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <p class="obtient-title">Support dédié</p>
+          <p class="obtient-desc">Une question ? Notre équipe est disponible pour vous accompagner et vous aider à tirer le meilleur parti de la plateforme.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════ TÉMOIGNAGES ═══════════ -->
+  <section class="section" id="temoignages" style="background:var(--bg-subtle);">
+    <div class="container">
+
+      <div class="section-header reveal">
+        <span class="badge badge-subtle" style="margin-bottom:16px;">Ils nous font confiance</span>
+        <h2>Des membres de toute l'Afrique francophone</h2>
+        <p>Des entrepreneurs, étudiants, créateurs et freelances qui ont transformé leur pratique numérique grâce à Nouvora Labs.</p>
+      </div>
+
+      <style>
+        .testi-masonry {
+          columns: 3;
+          column-gap: 20px;
+        }
+        .testi-item {
+          break-inside: avoid;
+          margin-bottom: 20px;
+        }
+        .testi-card {
+          background: var(--bg-white);
+          border: 1px solid var(--border-light);
+          border-radius: 16px;
+          padding: 24px;
+          box-shadow: 0 2px 8px rgba(15,23,42,0.05);
+          transition: all 0.2s ease;
+        }
+        .testi-card:hover {
+          box-shadow: 0 8px 24px rgba(15,23,42,0.09);
+          transform: translateY(-2px);
+          border-color: var(--border-medium);
+        }
+        .testi-stars {
+          display: flex; gap: 2px; margin-bottom: 12px;
+        }
+        .testi-stars svg { width: 13px; height: 13px; fill: #F59E0B; }
+        .testi-quote {
+          font-size: 0.9375rem;
+          color: var(--text-primary);
+          line-height: 1.7;
+          margin-bottom: 18px;
+          font-style: italic;
+        }
+        .testi-author {
+          display: flex; align-items: center; gap: 11px;
+          border-top: 1px solid var(--border-light);
+          padding-top: 14px;
+        }
+        .testi-avatar {
+          width: 38px; height: 38px; border-radius: 50%;
+          background: var(--blue-primary);
+          display: flex; align-items: center; justify-content: center;
+          font-size: 0.8125rem; font-weight: 800; color: white;
+          flex-shrink: 0; border: 2px solid var(--blue-light);
+        }
+        .testi-name { font-size: 0.875rem; font-weight: 700; color: var(--text-primary); }
+        .testi-role { font-size: 0.75rem; color: var(--text-tertiary); margin-top: 1px; }
+        .testi-flag {
+          margin-left: auto; font-size: 1.125rem; flex-shrink: 0;
+        }
+        @media(max-width: 900px) { .testi-masonry { columns: 2; } }
+        @media(max-width: 560px) { .testi-masonry { columns: 1; } }
+      </style>
+
+      <div class="testi-masonry">
+
+        <div class="testi-item reveal delay-1">
+          <div class="testi-card">
+            <div class="testi-stars">
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <p class="testi-quote">"J'ai téléchargé le Kit Business et en moins d'une semaine j'avais terminé la formation Shopify. J'ai lancé ma boutique en ligne avec les ressources du pack. Je n'aurais jamais pu payer ces formations séparément."</p>
+            <div class="testi-author">
+              <div class="testi-avatar">AK</div>
+              <div>
+                <p class="testi-name">Aïssatou K.</p>
+                <p class="testi-role">Commerçante · Dakar, Sénégal</p>
+              </div>
+              <span class="testi-flag">🇸🇳</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testi-item reveal delay-2">
+          <div class="testi-card">
+            <div class="testi-stars">
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <p class="testi-quote">"Les prompts IA ont changé ma façon de travailler. Je crée du contenu pour mes clients deux fois plus vite. La section ChatGPT de A à Z m'a appris des choses que je cherchais depuis des mois sur YouTube sans succès."</p>
+            <div class="testi-author">
+              <div class="testi-avatar">OD</div>
+              <div>
+                <p class="testi-name">Oumar D.</p>
+                <p class="testi-role">Freelance · Abidjan, Côte d'Ivoire</p>
+              </div>
+              <span class="testi-flag">🇨🇮</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testi-item reveal delay-3">
+          <div class="testi-card">
+            <div class="testi-stars">
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <p class="testi-quote">"Je suis étudiant en informatique à Cotonou. Avec la Méga Bibliothèque, j'ai accès à des cours sur Photoshop, le développement web et même Python. C'est vraiment impressionnant pour le prix."</p>
+            <div class="testi-author">
+              <div class="testi-avatar">FM</div>
+              <div>
+                <p class="testi-name">Félicien M.</p>
+                <p class="testi-role">Étudiant en informatique · Cotonou, Bénin</p>
+              </div>
+              <span class="testi-flag">🇧🇯</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testi-item reveal delay-1">
+          <div class="testi-card">
+            <div class="testi-stars">
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <p class="testi-quote">"La formation DaVinci Resolve du Kit Business m'a permis de proposer le montage vidéo comme service à mes clients. En deux mois j'avais récupéré mon investissement plusieurs fois. Vraiment solide."</p>
+            <div class="testi-author">
+              <div class="testi-avatar">YT</div>
+              <div>
+                <p class="testi-name">Yves T.</p>
+                <p class="testi-role">Créateur de contenu · Lomé, Togo</p>
+              </div>
+              <span class="testi-flag">🇹🇬</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testi-item reveal delay-2">
+          <div class="testi-card">
+            <div class="testi-stars">
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <p class="testi-quote">"Je recommande Nouvora Labs à tous mes clients. La logithèque seule vaut l'investissement — j'avais besoin d'outils professionnels pour mon agence et j'ai tout trouvé en un seul endroit."</p>
+            <div class="testi-author">
+              <div class="testi-avatar">RN</div>
+              <div>
+                <p class="testi-name">Rachel N.</p>
+                <p class="testi-role">Consultante digitale · Douala, Cameroun</p>
+              </div>
+              <span class="testi-flag">🇨🇲</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testi-item reveal delay-3">
+          <div class="testi-card">
+            <div class="testi-stars">
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <p class="testi-quote">"J'ai commencé avec la formation Facebook Ads et TikTok Marketing du Kit Business. Aujourd'hui je gère les campagnes publicitaires de 3 boutiques locales. Nouvora m'a donné les compétences qui me manquaient."</p>
+            <div class="testi-author">
+              <div class="testi-avatar">IS</div>
+              <div>
+                <p class="testi-name">Ibrahim S.</p>
+                <p class="testi-role">Entrepreneur · Ouagadougou, Burkina Faso</p>
+              </div>
+              <span class="testi-flag">🇧🇫</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testi-item reveal delay-1">
+          <div class="testi-card">
+            <div class="testi-stars">
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <p class="testi-quote">"Photoshop et Illustrator dans la Méga Bibliothèque m'ont permis de me reconvertir. Avant j'étais dans la vente, maintenant je travaille comme graphiste freelance. Les cours sont clairs et bien structurés."</p>
+            <div class="testi-author">
+              <div class="testi-avatar">MK</div>
+              <div>
+                <p class="testi-name">Mariama K.</p>
+                <p class="testi-role">Graphiste freelance · Conakry, Guinée</p>
+              </div>
+              <span class="testi-flag">🇬🇳</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testi-item reveal delay-2">
+          <div class="testi-card">
+            <div class="testi-stars">
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <p class="testi-quote">"J'avais essayé d'apprendre le dropshipping seul pendant un an sans résultats. Avec la formation du Kit Business j'ai enfin compris la structure. Premier produit vendu au bout de 3 semaines."</p>
+            <div class="testi-author">
+              <div class="testi-avatar">JM</div>
+              <div>
+                <p class="testi-name">Jean-Pierre M.</p>
+                <p class="testi-role">Entrepreneur e-commerce · Kinshasa, RDC</p>
+              </div>
+              <span class="testi-flag">🇨🇩</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testi-item reveal delay-3">
+          <div class="testi-card">
+            <div class="testi-stars">
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <p class="testi-quote">"En tant que consultant, j'avais besoin de me former rapidement sur l'affiliation et les tunnels de vente. Nouvora Labs m'a tout donné en un seul pack. Je l'ai recommandé à toute mon équipe."</p>
+            <div class="testi-author">
+              <div class="testi-avatar">AT</div>
+              <div>
+                <p class="testi-name">Adama T.</p>
+                <p class="testi-role">Consultant marketing · Bamako, Mali</p>
+              </div>
+              <span class="testi-flag">🇲🇱</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testi-item reveal delay-1">
+          <div class="testi-card">
+            <div class="testi-stars">
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <p class="testi-quote">"La section Excel VBA et Google Analytics du Kit Business m'a aidée à automatiser des tâches que je faisais manuellement chaque semaine. Un gain de temps considérable pour mon travail quotidien."</p>
+            <div class="testi-author">
+              <div class="testi-avatar">HI</div>
+              <div>
+                <p class="testi-name">Hadiza I.</p>
+                <p class="testi-role">Assistante administrative · Niamey, Niger</p>
+              </div>
+              <span class="testi-flag">🇳🇪</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════ LAISSER UN TÉMOIGNAGE ═══════════ -->
+  <section class="section" id="laisser-temoignage" style="background:#fff;border-top:1px solid var(--border-light);">
+    <div class="container">
+      <div class="container-narrow">
+        <div class="section-header reveal" style="text-align:center;">
+          <span class="badge badge-blue" style="margin-bottom:16px;">Votre avis compte</span>
+          <h2>Laisser un témoignage</h2>
+          <p style="color:var(--text-secondary);margin-top:8px;">Partagez votre expérience avec la communauté Nouvora Labs.</p>
+        </div>
+        <div class="reveal" style="background:var(--bg-subtle);border:1px solid var(--border-light);border-radius:20px;padding:32px;max-width:560px;margin:0 auto;">
+          <div id="testiFormMsg" style="display:none;padding:12px 16px;border-radius:10px;font-size:.875rem;font-weight:600;margin-bottom:20px;"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+            <div>
+              <label style="display:block;font-size:.8rem;font-weight:700;color:#374151;margin-bottom:6px;">Nom</label>
+              <input type="text" id="testiNom" class="form-input" placeholder="Écrivez votre nom" style="width:100%;padding:10px 14px;border:1.5px solid var(--border-medium);border-radius:10px;font-size:.875rem;font-family:inherit;outline:none;background:#fff;transition:border-color .15s;" />
+            </div>
+            <div>
+              <label style="display:block;font-size:.8rem;font-weight:700;color:#374151;margin-bottom:6px;">Pays</label>
+              <input type="text" id="testiPays" class="form-input" placeholder="Ex: Bénin, Côte d'Ivoire…" style="width:100%;padding:10px 14px;border:1.5px solid var(--border-medium);border-radius:10px;font-size:.875rem;font-family:inherit;outline:none;background:#fff;transition:border-color .15s;" />
+            </div>
+          </div>
+          <div style="margin-bottom:20px;">
+            <label style="display:block;font-size:.8rem;font-weight:700;color:#374151;margin-bottom:6px;">Votre témoignage</label>
+            <textarea id="testiTexte" placeholder="Décrivez votre expérience avec Nouvora Labs…" rows="4" style="width:100%;padding:10px 14px;border:1.5px solid var(--border-medium);border-radius:10px;font-size:.875rem;font-family:inherit;outline:none;background:#fff;resize:vertical;transition:border-color .15s;"></textarea>
+          </div>
+          <button onclick="submitTestimonial()" style="display:inline-flex;align-items:center;gap:8px;padding:11px 24px;background:#2563EB;color:white;border:none;border-radius:10px;font-size:.875rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Soumettre le témoignage
+          </button>
+          <p style="font-size:.75rem;color:#94A3B8;margin-top:12px;">Votre témoignage sera visible après validation par notre équipe.</p>
+        </div>
+      </div>
+
+      <!-- Témoignages publiés dynamiques -->
+      <div id="dynamicTestimonials" style="margin-top:48px;"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FAQ ═══════════ -->
+  <section class="section" id="faq">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="badge badge-subtle" style="margin-bottom:16px;">FAQ</span>
+        <h2>Questions fréquentes</h2>
+        <p>Tout ce que vous devez savoir sur Nouvora Labs avant de commencer.</p>
+      </div>
+
+      <div style="max-width:720px; margin:0 auto;" class="reveal">
+
+        <div class="faq-item">
+          <div class="faq-question">
+            Qu'est-ce que Nouvora Labs exactement ?
+            <div class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          </div>
+          <div class="faq-answer">Nouvora Labs est un portail numérique premium donnant accès à 5 grandes bibliothèques de ressources : Méga Ressources, Kit Business en Ligne, Prompts IA, Logithèque Premium et Bonus & Mises à Jour. Chaque bibliothèque est disponible sous forme de document PDF organisé et téléchargeable.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            Comment accéder aux bibliothèques après mon inscription ?
+            <div class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          </div>
+          <div class="faq-answer">Après votre inscription, vous accédez à votre tableau de bord personnel. Vous y trouverez les 5 cartes correspondant à chaque bibliothèque. Un simple clic sur le bouton d'accès vous permet de télécharger ou consulter la bibliothèque correspondante.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            Les bibliothèques sont-elles mises à jour régulièrement ?
+            <div class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          </div>
+          <div class="faq-answer">Oui. Les bibliothèques sont enrichies régulièrement avec de nouveaux contenus, ressources et bonus. La section "Bonus & Mises à Jour" est spécialement dédiée aux nouveautés ajoutées pour les membres actifs.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            Puis-je accéder à la plateforme depuis mon téléphone ?
+            <div class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          </div>
+          <div class="faq-answer">Absolument. Nouvora Labs est conçu pour fonctionner sur tous les appareils — ordinateur, tablette et smartphone. L'interface s'adapte automatiquement à la taille de votre écran pour une expérience optimale.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            Mes données sont-elles protégées ?
+            <div class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          </div>
+          <div class="faq-answer">Oui, la protection de vos données personnelles est une priorité. Votre accès est sécurisé, personnel et non partageable. Nous respectons pleinement le RGPD et ne revendons jamais vos informations à des tiers.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            À qui s'adresse Nouvora Labs ?
+            <div class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          </div>
+          <div class="faq-answer">Nouvora Labs s'adresse aux entrepreneurs, freelances, créateurs de contenu, étudiants et à toute personne souhaitant développer ses compétences numériques, lancer ou faire évoluer une activité en ligne, ou simplement accéder à des ressources de qualité dans leur langue.</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ CTA FINAL ═══════════ -->
+  <section class="section">
+    <div class="container">
+      <div class="cta-banner reveal-scale">
+        <span class="badge" style="background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);border-color:rgba(255,255,255,0.2);margin-bottom:20px;">Accès immédiat</span>
+        <h2 class="cta-banner-title">Prêt à accéder à vos 5 bibliothèques ?</h2>
+        <p class="cta-banner-subtitle">Rejoignez Nouvora Labs et commencez à apprendre, créer et évoluer dès aujourd'hui.</p>
+        <button onclick="openAccessModal()" class="btn btn-white btn-xl">
+          Accéder à Nouvora
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <div class="cta-banner-trust">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Accès sécurisé</span>
+          <span>·</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Sans engagement</span>
+          <span>·</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>2 min pour s'inscrire</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FOOTER ═══════════ -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer-grid">
+
+      <div class="footer-brand">
+        <a href="index.html" class="navbar-logo" style="margin-bottom:4px;display:inline-flex;">
+          <div class="navbar-logo-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/>
+              <line x1="12" y1="22" x2="12" y2="15.5"/>
+              <polyline points="22 8.5 12 15.5 2 8.5"/>
+            </svg>
+          </div>
+          <span class="navbar-logo-text" style="color:white;">Nouvora <span>Labs</span></span>
+        </a>
+        <p>Apprendre. Créer. Évoluer.<br/>Le portail numérique premium pour les francophones ambitieux.</p>
+        <div class="footer-social" aria-label="Réseaux sociaux">
+          <a href="#" class="footer-social-link" aria-label="Twitter/X">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+          </a>
+          <a href="#" class="footer-social-link" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="#" class="footer-social-link" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Plateforme</h4>
+        <ul>
+          <li><a href="#univers">Nos univers</a></li>
+          <li><a href="#avantages">Avantages</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="app.html">Mon tableau de bord</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Bibliothèques</h4>
+        <ul>
+          <li><a href="app.html">Méga Ressources</a></li>
+          <li><a href="app.html">Kit Business en Ligne</a></li>
+          <li><a href="app.html">Prompts IA</a></li>
+          <li><a href="app.html">Logithèque Premium</a></li>
+          <li><a href="app.html">Bonus & Mises à Jour</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Informations</h4>
+        <ul>
+          <li><a href="#">À propos</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#" onclick="openLoginModal();return false;">Connexion</a></li>
+          <li><a href="app.html">S'inscrire</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="https://wa.me/2290141442586?text=Bonjour,%0aje%20vous%20contacte%20depuis%20Nouvora.%0aJ%27ai%20besoin%20d%27assistance." target="_blank" rel="noopener">Contacter le support</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2024 Nouvora Labs. Tous droits réservés.</p>
+      <nav class="footer-bottom-links" aria-label="Liens légaux">
+        <a href="#">Mentions légales</a>
+        <a href="#">Politique de confidentialité</a>
+        <a href="#">CGU</a>
+      </nav>
+    </div>
+  </footer>
+
+<!-- WhatsApp FAB -->
+<a href="https://wa.me/2290141442586?text=Bonjour,%0aje%20vous%20contacte%20depuis%20Nouvora.%0aJ%27ai%20besoin%20d%27assistance."
+   target="_blank" rel="noopener" class="whatsapp-fab" aria-label="Contacter le support WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" width="26" height="26" aria-hidden="true">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+    <path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.558 4.122 1.535 5.857L.057 23.882a.5.5 0 0 0 .612.612l6.056-1.478A11.95 11.95 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.017-1.373l-.36-.214-3.732.91.927-3.644-.233-.376A9.818 9.818 0 0 1 2.182 12C2.182 6.567 6.567 2.182 12 2.182S21.818 6.567 21.818 12 17.433 21.818 12 21.818z"/>
+  </svg>
+</a>
+<style>
+.whatsapp-fab {
+  position: fixed; bottom: 28px; right: 28px; z-index: 9999;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #25D366; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.35), 0 2px 8px rgba(0,0,0,0.12);
+  text-decoration: none; transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.whatsapp-fab:hover { transform: scale(1.08) translateY(-2px); box-shadow: 0 8px 28px rgba(37,211,102,0.45), 0 4px 12px rgba(0,0,0,0.14); }
+</style>
+
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/navigation.js"></script>
+  <script src="assets/js/animations.js"></script>
+  <script src="assets/js/faq.js"></script>
+  <script src="assets/js/geniuspay-client.js"></script>
+
+  <!-- ══════════════════════════════════════════════
+       MODAL ACCÈS — TUNNEL COMPTE + PAIEMENT
+  ═══════════════════════════════════════════════ -->
+
+  <style>
+    /* ── Modal overlay ─────────────────────────── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    /* ── Modal box ─────────────────────────────── */
+    .modal-box {
+      background: var(--bg-white);
+      border-radius: 20px;
+      padding: 44px 40px;
+      width: 100%; max-width: 440px;
+      max-height: 92vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      box-shadow: 0 32px 64px rgba(15,23,42,0.18), 0 8px 20px rgba(15,23,42,0.08);
+      transform: translateY(16px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      position: relative;
+    }
+    .modal-overlay.open .modal-box {
+      transform: translateY(0) scale(1);
+    }
+
+    /* ── Modal close ───────────────────────────── */
+    .modal-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.15s ease;
+    }
+    .modal-close:hover { background: var(--border-light); }
+    .modal-close svg { width: 14px; height: 14px; color: var(--text-secondary); }
+
+    /* ── Modal header ──────────────────────────── */
+    .modal-logo {
+      width: 48px; height: 48px;
+      background: var(--blue-primary); border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+    }
+    .modal-logo svg { width: 24px; height: 24px; color: white; }
+
+    .modal-title {
+      font-size: 1.375rem; font-weight: 800;
+      color: var(--text-primary); letter-spacing: -0.03em;
+      margin-bottom: 6px; line-height: 1.25;
+    }
+    .modal-subtitle {
+      font-size: 0.875rem; color: var(--text-secondary);
+      line-height: 1.55; margin-bottom: 28px;
+    }
+
+    /* ── Steps indicator ───────────────────────── */
+    .modal-steps {
+      display: flex; align-items: center; gap: 0;
+      margin-bottom: 28px;
+    }
+    .modal-step {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.6875rem; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      color: var(--text-tertiary);
+    }
+    .modal-step.active { color: var(--blue-primary); }
+    .modal-step.done { color: #16A34A; }
+    .modal-step-dot {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--bg-subtle); border: 2px solid var(--border-medium);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.6875rem; font-weight: 800; color: var(--text-tertiary);
+      flex-shrink: 0;
+    }
+    .modal-step.active .modal-step-dot {
+      background: var(--blue-primary); border-color: var(--blue-primary); color: white;
+    }
+    .modal-step.done .modal-step-dot {
+      background: #16A34A; border-color: #16A34A; color: white;
+    }
+    .modal-step-line {
+      flex: 1; height: 1px; background: var(--border-light); margin: 0 8px;
+    }
+
+    /* ── Form elements ─────────────────────────── */
+    .modal-form { display: flex; flex-direction: column; gap: 14px; }
+    .modal-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .modal-form .form-label {
+      font-size: 0.8125rem; font-weight: 600; color: var(--text-primary);
+      margin-bottom: 5px; display: block;
+    }
+    .modal-form .form-input {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid var(--border-medium);
+      border-radius: 10px; font-size: 0.9375rem;
+      color: var(--text-primary); background: var(--bg-white);
+      outline: none; font-family: var(--font-sans);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .modal-form .form-input::placeholder { color: var(--text-tertiary); }
+    .modal-form .form-input:focus {
+      border-color: var(--blue-primary);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    }
+
+    
+    
+    
+    
+    
+
+    /* ── Modal info note ───────────────────────── */
+    .modal-note {
+      display: flex; align-items: flex-start; gap: 10px;
+      background: var(--bg-subtle); border-radius: 10px;
+      padding: 12px 14px; margin-top: 4px;
+    }
+    .modal-note svg { width: 15px; height: 15px; color: var(--blue-primary); flex-shrink: 0; margin-top: 1px; }
+    .modal-note p { font-size: 0.8125rem; color: var(--text-secondary); line-height: 1.5; }
+
+    /* ── Success state ─────────────────────────── */
+    .modal-success {
+      text-align: center; padding: 16px 0;
+    }
+    .modal-success-icon {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: #DCFCE7; border: 2px solid #86EFAC;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .modal-success-icon svg { width: 28px; height: 28px; color: #16A34A; }
+    .modal-success h3 { font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin-bottom: 8px; }
+    .modal-success p { font-size: 0.9375rem; color: var(--text-secondary); line-height: 1.6; }
+
+    /* ── Responsive ────────────────────────────── */
+
+    /* ── Bannières bibliothèques 1:1 ── */
+    .lib-banner-slot {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #F1F5F9;
+      border-radius: 12px;
+      border: 2px dashed #CBD5E1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      overflow: hidden;
+      position: relative;
+    }
+    .lib-banner-slot img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+    .lib-banner-slot .banner-placeholder {
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: #94A3B8; text-align: center; padding: 20px;
+    }
+    .lib-banner-slot .banner-placeholder svg { width: 28px; height: 28px; opacity: .5; }
+    .lib-banner-slot .banner-placeholder span { font-size: .75rem; font-weight: 600; letter-spacing: .04em; }
+
+    /* ── Affichage prix dynamique ── */
+    .price-display { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 12px 0 4px; }
+    .price-normal  { font-size: 1.5rem; font-weight: 800; color: #0F172A; letter-spacing: -.03em; }
+    .price-crossed { text-decoration: line-through; color: #94A3B8; font-size: 1.1rem; font-weight: 600; }
+    .price-promo   { font-size: 1.5rem; font-weight: 800; color: #16A34A; letter-spacing: -.03em; }
+    .price-badge   { display: inline-block; background: #EF4444; color: white; font-size: .7rem; font-weight: 800; padding: 3px 10px; border-radius: 20px; letter-spacing: .06em; text-transform: uppercase; }
+
+    @media (max-width: 480px) {
+      .modal-box {
+        padding: 28px 20px;
+        max-height: 88vh;
+        border-radius: 16px;
+      }
+      .modal-overlay { padding: 12px; align-items: flex-end; }
+      .modal-overlay.open .modal-box { border-radius: 20px 20px 0 0; }
+      .modal-form-row { grid-template-columns: 1fr; }
+      
+    }
+  </style>
+
+  <!-- Modal HTML -->
+  <div class="modal-overlay" id="accessModal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-box">
+
+      <!-- Close -->
+      <button class="modal-close" onclick="closeAccessModal()" aria-label="Fermer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <!-- Logo -->
+      <div class="modal-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/>
+          <line x1="12" y1="22" x2="12" y2="15.5"/>
+          <polyline points="22 8.5 12 15.5 2 8.5"/>
+        </svg>
+      </div>
+
+      <!-- ─── ÉTAPE 0 : Choix Créer un compte / Se connecter ─── -->
+      <div id="modal-step-0">
+        <h2 class="modal-title">Accéder à Nouvora Labs</h2>
+        <p class="modal-subtitle">Première visite ou déjà membre ? Choisissez une option pour continuer.</p>
+
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:24px;">
+          <button onclick="goToRegisterStep()" class="btn btn-primary btn-full" style="justify-content:center;padding:16px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+            Créer un compte
+          </button>
+          <button onclick="goToLoginStep()" class="btn btn-secondary btn-full" style="justify-content:center;padding:16px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            Se connecter
+          </button>
+        </div>
+
+        <p style="font-size:.8125rem;color:var(--text-tertiary);text-align:center;margin-top:20px;">
+          Nouveau sur Nouvora Labs ? Choisissez "Créer un compte" pour débloquer l'accès aux bibliothèques.
+        </p>
+      </div>
+
+      <!-- ─── ÉTAPE CONNEXION : Email + mot de passe ─── -->
+      <div id="modal-step-login" style="display:none;">
+        <h2 class="modal-title">Connexion</h2>
+        <p class="modal-subtitle">Connectez-vous avec les identifiants de votre compte Nouvora Labs.</p>
+
+        <div class="modal-form">
+          <div>
+            <label class="form-label" for="login-email">Email</label>
+            <input type="email" id="login-email" class="form-input" placeholder="vous@exemple.com" autocomplete="email" />
+          </div>
+          <div style="margin-top:14px;">
+            <label class="form-label" for="login-password">Mot de passe</label>
+            <input type="password" id="login-password" class="form-input" placeholder="Votre mot de passe" autocomplete="current-password" />
+          </div>
+
+          <div id="login-error" style="display:none;margin-top:14px;background:#FEF2F2;border:1px solid #FECACA;border-radius:10px;padding:12px 14px;">
+            <p style="font-size:.8125rem;color:#B91C1C;font-weight:600;margin-bottom:8px;" id="login-error-text"></p>
+            <button onclick="goToRegisterStep()" id="login-error-cta" style="display:none;font-size:.8125rem;font-weight:700;color:#2563EB;background:none;border:none;padding:0;cursor:pointer;">S'inscrire maintenant →</button>
+          </div>
+
+          <button onclick="submitLogin()" class="btn btn-primary btn-full" style="margin-top:18px;padding:14px;font-size:1rem;justify-content:center;">
+            Se connecter
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+
+          <button onclick="goToChoiceStep()" style="margin-top:12px;width:100%;text-align:center;font-size:.8125rem;color:var(--text-tertiary);background:none;border:none;cursor:pointer;">← Retour</button>
+        </div>
+      </div>
+
+      <!-- ─── ÉTAPE 1 : Formulaire infos ─── -->
+      <div id="modal-step-1" style="display:none;">
+        <h2 class="modal-title" id="modal-title">Accéder à Nouvora Labs</h2>
+        <p class="modal-subtitle">Renseignez vos informations pour créer votre accès à la plateforme.</p>
+
+        <!-- Steps -->
+        <div class="modal-steps">
+          <div class="modal-step active">
+            <div class="modal-step-dot">1</div>
+            Informations
+          </div>
+          <div class="modal-step-line"></div>
+          <div class="modal-step">
+            <div class="modal-step-dot">2</div>
+            Paiement
+          </div>
+          <div class="modal-step-line"></div>
+          <div class="modal-step">
+            <div class="modal-step-dot">3</div>
+            Accès
+          </div>
+        </div>
+
+        <div class="modal-form">
+          <div class="modal-form-row">
+            <div>
+              <label class="form-label" for="modal-prenom">Prénom</label>
+              <input type="text" id="modal-prenom" class="form-input" placeholder="Écrivez votre prénom" autocomplete="given-name" />
+            </div>
+            <div>
+              <label class="form-label" for="modal-nom">Nom</label>
+              <input type="text" id="modal-nom" class="form-input" placeholder="Écrivez votre nom" autocomplete="family-name" />
+            </div>
+          </div>
+          <div>
+            <label class="form-label" for="modal-email">Adresse email</label>
+            <input type="email" id="modal-email" class="form-input" placeholder="Écrivez votre adresse email" autocomplete="email" />
+          </div>
+
+          <div>
+            <label class="form-label" for="modal-password">Mot de passe</label>
+            <input type="password" id="modal-password" class="form-input" placeholder="Créez votre mot de passe" autocomplete="new-password" style="letter-spacing:0.08em;" />
+          </div>
+
+          <div class="modal-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <p>Vos données sont protégées et ne seront jamais revendues à des tiers.</p>
+          </div>
+
+          <button onclick="goToPayment()" class="btn btn-primary btn-full" style="margin-top:12px;padding:14px;font-size:1rem;">
+            Passer au paiement
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ─── ÉTAPE 2 : Paiement ─── -->
+      <div id="modal-step-2" style="display:none;">
+        <h2 class="modal-title">Finalisez votre accès</h2>
+        <p class="modal-subtitle">Accédez à plus de 300 formations, logiciels et ressources.</p>
+
+        <div class="modal-steps">
+          <div class="modal-step done">
+            <div class="modal-step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="11" height="11"><polyline points="20 6 9 17 4 12"/></svg></div>
+            Informations
+          </div>
+          <div class="modal-step-line" style="background:var(--blue-primary);opacity:0.3;"></div>
+          <div class="modal-step active">
+            <div class="modal-step-dot">2</div>
+            Paiement
+          </div>
+          <div class="modal-step-line"></div>
+          <div class="modal-step">
+            <div class="modal-step-dot">3</div>
+            Accès
+          </div>
+        </div>
+
+        <div class="modal-form">
+          <!-- Récapitulatif -->
+          <div style="background:#F0F9FF;border:1px solid #BAE6FD;border-radius:12px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <div>
+              <div style="font-size:.8rem;font-weight:700;color:#0369A1;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Accès Nouvora Labs</div>
+              <div style="font-size:.875rem;color:#0F172A;line-height:1.5;">5 bibliothèques · Accès illimité · À vie</div>
+            </div>
+            <div style="font-size:1.375rem;font-weight:900;color:#0F172A;letter-spacing:-.03em;white-space:nowrap;" id="payment-amount">—</div>
+            <div id="payment-promo-badge" style="display:none;font-size:.7rem;font-weight:800;background:#EF4444;color:white;padding:2px 8px;border-radius:10px;margin-top:4px;"></div>
+          </div>
+
+          <!-- Zone Genius Pay -->
+          <div style="border:1.5px dashed #CBD5E1;border-radius:12px;padding:24px;text-align:center;">
+            <div style="width:44px;height:44px;background:#EFF6FF;border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" width="22" height="22"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            </div>
+            <p style="font-size:.875rem;font-weight:700;color:#0F172A;margin-bottom:4px;">Paiement sécurisé via Genius Pay</p>
+            <p style="font-size:.8125rem;color:#64748B;">Mobile Money · Carte bancaire · Transfert</p>
+          </div>
+
+          <!-- Bouton paiement -->
+          <button onclick="simulatePayment()" class="btn btn-primary btn-full" id="pay-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            Payer et accéder à Nouvora Labs
+          </button>
+
+          <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:.75rem;color:#94A3B8;margin-top:-4px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            Paiement 100% sécurisé et chiffré
+          </div>
+
+          <button onclick="goToStep1()" style="font-size:.8125rem;color:var(--text-tertiary);background:none;border:none;cursor:pointer;text-align:center;">
+            ← Modifier mes informations
+          </button>
+        </div>
+      </div>
+
+      <!-- ─── ÉTAPE 3 : Succès ─── -->
+      <div id="modal-step-3" style="display:none;">
+        <div class="modal-steps">
+          <div class="modal-step done">
+            <div class="modal-step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="11" height="11"><polyline points="20 6 9 17 4 12"/></svg></div>
+            Informations
+          </div>
+          <div class="modal-step-line" style="background:var(--blue-primary);opacity:0.3;"></div>
+          <div class="modal-step done">
+            <div class="modal-step-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="11" height="11"><polyline points="20 6 9 17 4 12"/></svg></div>
+            Confirmation
+          </div>
+          <div class="modal-step-line" style="background:var(--blue-primary);opacity:0.3;"></div>
+          <div class="modal-step active">
+            <div class="modal-step-dot">3</div>
+            Accès
+          </div>
+        </div>
+        <div class="modal-success">
+          <div class="modal-success-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h3>Accès confirmé !</h3>
+          <p>Bienvenue sur Nouvora Labs. Vous allez être redirigé vers votre bibliothèque dans un instant.</p>
+          <a href="app.html" class="btn btn-primary btn-full" style="margin-top:24px;">
+            Accéder à ma bibliothèque
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+    <script>
+    /* ══════════════════════════════════════════════════
+       NOUVORA LABS — Tunnel accès sans OTP
+       Étape 1 : Nom / Prénom / Email / Mot de passe
+       Étape 2 : Paiement Genius Pay (préparé)
+       Étape 3 : Succès → redirection app.html
+       Rôle stocké dans localStorage (nl_role)
+    ══════════════════════════════════════════════════ */
+
+    const NL_ROLE_KEY = 'nouvora_user_role';
+
+    /* ── Prix affiché ── */
+    /* ── Clé localStorage prix (géré depuis admin) ── */
+    const NL_PRICING_KEY = 'nouvora_pricing';
+
+    function getPricing() {
+      try {
+        return JSON.parse(localStorage.getItem(NL_PRICING_KEY)) || {
+          prixNormal: 2000, promoActive: false, prixPromo: 2000, badgePromo: 'PROMO'
+        };
+      } catch { return { prixNormal: 2000, promoActive: false, prixPromo: 2000, badgePromo: 'PROMO' }; }
+    }
+
+    function getActivePrice() {
+      const p = getPricing();
+      return p.promoActive ? p.prixPromo : p.prixNormal;
+    }
+
+    function formatPrice(n) {
+      return Number(n).toLocaleString('fr-FR') + ' FCFA';
+    }
+
+    function renderHeroPrice() {
+      const p = getPricing();
+      const normalEl  = document.getElementById('hero-price-normal');
+      const crossedEl = document.getElementById('hero-price-crossed');
+      const promoEl   = document.getElementById('hero-price-promo-value');
+      const badgeEl   = document.getElementById('hero-price-badge');
+      if (!normalEl) return;
+
+      if (p.promoActive) {
+        normalEl.style.display  = 'none';
+        crossedEl.style.display = '';
+        crossedEl.textContent   = formatPrice(p.prixNormal);
+        promoEl.style.display   = '';
+        promoEl.textContent     = formatPrice(p.prixPromo);
+        badgeEl.style.display   = '';
+        badgeEl.textContent     = p.badgePromo || 'PROMO';
+      } else {
+        normalEl.style.display  = '';
+        normalEl.textContent    = formatPrice(p.prixNormal);
+        crossedEl.style.display = 'none';
+        promoEl.style.display   = 'none';
+        badgeEl.style.display   = 'none';
+      }
+    }
+
+    /* ── Modal open/close ── */
+    function showOnlyStep(stepId) {
+      ['modal-step-0', 'modal-step-login', 'modal-step-1', 'modal-step-2', 'modal-step-3'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = (id === stepId) ? '' : 'none';
+      });
+    }
+
+    function openAccessModal() {
+      document.getElementById('accessModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      showOnlyStep('modal-step-0');
+    }
+    function openLoginModal() {
+      document.getElementById('accessModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      showOnlyStep('modal-step-login');
+      setTimeout(() => { const el = document.getElementById('login-email'); if (el) el.focus(); }, 300);
+    }
+    function closeAccessModal() {
+      document.getElementById('accessModal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.getElementById('accessModal').addEventListener('click', function(e) {
+      if (e.target === this) closeAccessModal();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeAccessModal();
+    });
+
+    /* ── Navigation étape 0 ── */
+    function goToChoiceStep() {
+      showOnlyStep('modal-step-0');
+    }
+    function goToRegisterStep() {
+      showOnlyStep('modal-step-1');
+      setTimeout(() => { const el = document.getElementById('modal-prenom'); if (el) el.focus(); }, 200);
+    }
+    function goToLoginStep() {
+      showOnlyStep('modal-step-login');
+      setTimeout(() => { const el = document.getElementById('login-email'); if (el) el.focus(); }, 200);
+    }
+
+    /* ── Connexion (compte existant) ── */
+    function submitLogin() {
+      const email    = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const errorBox = document.getElementById('login-error');
+      const errorText = document.getElementById('login-error-text');
+      const errorCta  = document.getElementById('login-error-cta');
+
+      errorBox.style.display = 'none';
+      errorCta.style.display = 'none';
+
+      if (!email || !password) {
+        errorText.textContent = 'Veuillez renseigner votre email et votre mot de passe.';
+        errorBox.style.display = '';
+        return;
+      }
+
+      let users = [];
+      try { users = JSON.parse(localStorage.getItem('nouvora_admin_users')) || []; } catch {}
+      const user = users.find(u => (u.email || '').toLowerCase() === email.toLowerCase());
+
+      if (!user || user.password !== password) {
+        errorText.textContent = 'Email ou mot de passe incorrect.';
+        errorBox.style.display = '';
+        return;
+      }
+
+      if (user.statut !== 'premium' && user.statut !== 'admin') {
+        errorText.textContent = 'Aucun accès premium trouvé pour cet email. Inscrivez-vous pour débloquer l\'accès.';
+        errorCta.style.display = '';
+        errorBox.style.display = '';
+        return;
+      }
+
+      /* Connexion réussie : restaurer la session */
+      localStorage.setItem('nouvora_user_role', user.statut);
+      window.location.href = 'app.html';
+    }
+
+    /* ── Step 1 → Step 2 (Paiement) ── */
+    function goToStep1() {
+      showOnlyStep('modal-step-1');
+    }
+
+    function goToPayment() {
+      const prenom   = (document.getElementById('modal-prenom')   || {}).value?.trim();
+      const nom      = (document.getElementById('modal-nom')      || {}).value?.trim();
+      const email    = (document.getElementById('modal-email')    || {}).value?.trim();
+      const password = (document.getElementById('modal-password') || {}).value;
+
+      if (!prenom || !nom) { document.getElementById('modal-prenom').focus(); return; }
+      if (!email || !email.includes('@')) { document.getElementById('modal-email').focus(); return; }
+      if (!password || password.length < 6) { document.getElementById('modal-password').focus(); return; }
+
+      /* Stocker temporairement les infos (Supabase prendra le relais) */
+      window._nlPendingUser = { prenom, nom, email, password };
+
+      /* Afficher le montant dynamique depuis admin */
+      const pricing = getPricing();
+      const amountEl = document.getElementById('payment-amount');
+      const promoBadgeEl = document.getElementById('payment-promo-badge');
+      if (amountEl) {
+        if (pricing.promoActive) {
+          amountEl.innerHTML = `<span style="text-decoration:line-through;color:#94A3B8;font-size:1rem;margin-right:6px;">${formatPrice(pricing.prixNormal)}</span>${formatPrice(pricing.prixPromo)}`;
+        } else {
+          amountEl.textContent = formatPrice(pricing.prixNormal);
+        }
+      }
+      if (promoBadgeEl) {
+        if (pricing.promoActive && pricing.badgePromo) {
+          promoBadgeEl.textContent = pricing.badgePromo;
+          promoBadgeEl.style.display = '';
+        } else { promoBadgeEl.style.display = 'none'; }
+      }
+
+      document.getElementById('modal-step-1').style.display = 'none';
+      document.getElementById('modal-step-2').style.display = '';
+    }
+
+    /* ── Genius Pay : intégration préparée ── */
+    function simulatePayment() {
+      const btn = document.getElementById('pay-btn');
+      if (btn) { btn.disabled = true; btn.textContent = 'Traitement en cours…'; }
+
+      const _activePrice = getActivePrice();
+
+      /* Genius Pay (réel si configuré, simulé sinon — voir assets/js/geniuspay-client.js) */
+      startGeniusPayment(
+        _activePrice,
+        window._nlPendingUser || {},
+        (result) => onPaymentSuccess(result),
+        (err) => {
+          console.error('[Paiement] Échec :', err);
+          if (btn) { btn.disabled = false; btn.textContent = 'Réessayer le paiement'; }
+        }
+      );
+    }
+
+    /* ── Après paiement validé ── */
+    function onPaymentSuccess(paymentResult) {
+      const u = window._nlPendingUser || {};
+
+      /* ── Enregistrer l'utilisateur dans la liste admin ── */
+      const ADMIN_USERS_KEY = 'nouvora_admin_users';
+      let users = [];
+      try { users = JSON.parse(localStorage.getItem(ADMIN_USERS_KEY)) || []; } catch {}
+      const newUser = {
+        id:     Date.now(),
+        nom:    u.nom || '',
+        prenom: u.prenom || '',
+        email:  u.email || '',
+        password: u.password || '',
+        statut: 'premium',
+        date:   new Date().toISOString(),
+      };
+      users.push(newUser);
+      localStorage.setItem(ADMIN_USERS_KEY, JSON.stringify(users));
+
+      /* ── Enregistrer le paiement dans la liste admin ── */
+      const ADMIN_PAYMENTS_KEY = 'nouvora_admin_payments';
+      let payments = [];
+      try { payments = JSON.parse(localStorage.getItem(ADMIN_PAYMENTS_KEY)) || []; } catch {}
+      const montantPaye = getActivePrice();
+      payments.push({
+        id:      Date.now(),
+        nom:     `${u.prenom || ''} ${u.nom || ''}`.trim(),
+        email:   u.email || '',
+        montant: montantPaye,
+        date:    new Date().toISOString(),
+        statut:  'validé',
+        transactionId: (paymentResult && paymentResult.transactionId) || null,
+      });
+      localStorage.setItem(ADMIN_PAYMENTS_KEY, JSON.stringify(payments));
+
+      /* ── Attribuer le rôle premium pour la session courante ── */
+      localStorage.setItem(NL_ROLE_KEY, 'premium');
+
+      document.getElementById('modal-step-2').style.display = 'none';
+      document.getElementById('modal-step-3').style.display = '';
+
+      /* Redirection automatique vers app.html après 2s */
+      setTimeout(() => { window.location.href = 'app.html'; }, 2000);
+    }
+  renderHeroPrice();
+  </script>
+
+
+<script>
+/* ── Testimonials (localStorage) ── */
+const TESTI_KEY = 'nouvora_testimonials';
+
+function getTestimonials() { try { return JSON.parse(localStorage.getItem(TESTI_KEY)) || []; } catch { return []; } }
+function saveTestimonials(t) { localStorage.setItem(TESTI_KEY, JSON.stringify(t)); }
+
+function submitTestimonial() {
+  const nom   = (document.getElementById('testiNom').value   || '').trim();
+  const pays  = (document.getElementById('testiPays').value  || '').trim();
+  const texte = (document.getElementById('testiTexte').value || '').trim();
+  const msg   = document.getElementById('testiFormMsg');
+
+  if (!nom || !texte) {
+    msg.style.display = 'block';
+    msg.style.background = '#FEF2F2'; msg.style.color = '#DC2626'; msg.style.border = '1px solid #FECACA';
+    msg.textContent = 'Veuillez renseigner votre nom et votre témoignage.';
+    return;
+  }
+  const all = getTestimonials();
+  const id  = Date.now();
+  all.push({ id, nom, pays, texte, date: new Date().toISOString().slice(0,10), statut: 'pending' });
+  saveTestimonials(all);
+
+  document.getElementById('testiNom').value   = '';
+  document.getElementById('testiPays').value  = '';
+  document.getElementById('testiTexte').value = '';
+  msg.style.display = 'block';
+  msg.style.background = '#F0FDF4'; msg.style.color = '#15803D'; msg.style.border = '1px solid #BBF7D0';
+  msg.textContent = 'Merci ! Votre témoignage a été soumis et sera publié après validation.';
+  setTimeout(() => { msg.style.display = 'none'; }, 5000);
+}
+
+function renderDynamicTestimonials() {
+  const container = document.getElementById('dynamicTestimonials');
+  if (!container) return;
+  const approved = getTestimonials().filter(t => t.statut === 'approved');
+  if (!approved.length) { container.innerHTML = ''; return; }
+
+  container.innerHTML = `
+    <h3 style="text-align:center;font-size:1.25rem;font-weight:700;color:#0F172A;margin-bottom:24px;letter-spacing:-.02em;">Témoignages de notre communauté</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+      ${approved.map(t => `
+        <div style="background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:22px;">
+          <p style="font-size:.9rem;color:#475569;line-height:1.65;font-style:italic;margin-bottom:16px;">"${escHtml(t.texte)}"</p>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:34px;height:34px;border-radius:50%;background:#EFF6FF;color:#2563EB;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0;">${(t.nom||'?')[0].toUpperCase()}</div>
+            <div>
+              <div style="font-size:.875rem;font-weight:700;color:#0F172A;">${escHtml(t.nom)}</div>
+              <div style="font-size:.75rem;color:#94A3B8;">${escHtml(t.pays||'')}</div>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function escHtml(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+renderDynamicTestimonials();
+</script>
+</body>
+</html>

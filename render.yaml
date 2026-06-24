@@ -1,0 +1,21 @@
+# ════════════════════════════════════════════════════════════
+#  NOUVORA LABS — Configuration de déploiement Render
+#  Type : Site statique (Static Site)
+#  Documentation : https://render.com/docs/static-sites
+# ════════════════════════════════════════════════════════════
+
+services:
+  - type: web
+    name: nouvora-labs
+    runtime: static
+    buildCommand: ""              # Aucun build nécessaire — HTML/CSS/JS pur
+    staticPublishPath: .          # Sert les fichiers depuis la racine du projet
+    pullRequestPreviewsEnabled: false
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+    routes:
+      - type: rewrite
+        source: /
+        destination: /index.html
