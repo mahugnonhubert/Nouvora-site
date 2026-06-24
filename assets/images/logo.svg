@@ -1,1 +1,8 @@
-
+<!-- Remplacer ce fichier par votre logo (logo.png ou logo.svg) -->
+<!-- Dimensions recommandées : 160x40px -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 40" fill="none">
+  <polygon points="12 4 22 10 22 22 12 28 2 22 2 10" stroke="#2563EB" stroke-width="2" fill="none"/>
+  <line x1="12" y1="28" x2="12" y2="22" stroke="#2563EB" stroke-width="2"/>
+  <polyline points="22 10 12 16 2 10" stroke="#2563EB" stroke-width="2"/>
+  <text x="30" y="26" font-family="Inter,sans-serif" font-size="18" font-weight="800" fill="#0F172A" letter-spacing="-0.5">Nouvora <tspan fill="#2563EB">Labs</tspan></text>
+</svg>
