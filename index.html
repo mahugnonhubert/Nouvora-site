@@ -195,16 +195,18 @@
       .hero { padding-top: 110px; padding-bottom: 72px; }
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-client.js"></script>
 </head>
 <body>
 
   <!-- ═══════════ NAVIGATION ═══════════ -->
   <nav class="navbar" role="navigation" aria-label="Navigation principale">
     <div class="navbar-inner">
-      <!-- LOGO : remplacer assets/images/logo.svg par assets/images/logo.png pour votre propre logo -->
+      <!-- LOGO -->
       <a href="index.html" class="navbar-logo" aria-label="Nouvora Labs — Accueil">
-        <img src="assets/images/logo.svg" alt="Nouvora Labs"
-             style="height:36px;width:auto;display:block;"
+        <img src="assets/images/logo-full.png" alt="Nouvora Labs"
+             style="height:40px;width:auto;display:block;"
              onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';"
              id="navLogoImg" />
         <span id="navLogoFallback" style="display:none;align-items:center;gap:8px;">
@@ -263,7 +265,7 @@
       <p class="hero-slogan hero-animate-sub">Apprendre. Créer. Évoluer.</p>
 
       <p class="hero-subtitle hero-animate-sub">
-        Un portail premium donnant accès à 5 grandes bibliothèques numériques — ressources, outils, prompts IA, logiciels et bonus — pour entrepreneurs, créateurs et freelances francophones.
+        Un portail premium donnant accès à 5 grandes bibliothèques numériques — ressources, outils, prompts IA et bonus — pour entrepreneurs, créateurs et freelances francophones.
       </p>
 
       <!-- Présentation de l'offre : texte + prix + bouton -->
@@ -285,6 +287,12 @@
             </svg>
           </button>
         </div>
+
+        <div class="hero-animate-proof" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px; font-size:.85rem; color:var(--text-secondary);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5" width="16" height="16" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          <span><strong style="color:var(--text-primary);">5 bibliothèques</strong> · <strong style="color:var(--text-primary);">300+ formations</strong> · Paiement sécurisé · Accès à vie</span>
+        </div>
+
       </div>
 
 
@@ -314,7 +322,7 @@
     </div>
   </section>
 
-  <!-- ═══════════ 5 UNIVERS ═══════════ -->
+  <!-- ═══════════ 6 UNIVERS ═══════════ -->
   <section class="section" id="univers">
     <div class="container">
       <div class="section-header reveal">
@@ -329,11 +337,8 @@
         <div class="univers-card reveal delay-1" style="--card-color:#2563EB;">
           <p class="univers-number">Bibliothèque 01</p>
           <!-- EMPLACEMENT BANNIÈRE 1:1 — Méga Ressources (1080x1080 recommandé) -->
-          <div class="lib-banner-slot" id="banner-mega">
-            <div class="banner-placeholder">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-              <span>Bannière Méga Ressources<br/>1080 × 1080 px</span>
-            </div>
+          <div class="lib-banner-slot filled" id="banner-mega">
+            <img src="assets/images/banner-mega-ressources.jpg" alt="Méga Ressources — Nouvora Labs" loading="lazy" />
           </div>
           <div class="univers-icon" style="background:#EFF6FF;">
             <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2">
@@ -367,11 +372,8 @@
         <div class="univers-card reveal delay-2" style="--card-color:#059669;">
           <p class="univers-number">Bibliothèque 02</p>
           <!-- EMPLACEMENT BANNIÈRE 1:1 — Kit Business (1080x1080 recommandé) -->
-          <div class="lib-banner-slot" id="banner-kit">
-            <div class="banner-placeholder">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-              <span>Bannière Kit Business<br/>1080 × 1080 px</span>
-            </div>
+          <div class="lib-banner-slot filled" id="banner-kit">
+            <img src="assets/images/banner-kit-business.jpg" alt="Kit Business en Ligne — Nouvora Labs" loading="lazy" />
           </div>
           <div class="univers-icon" style="background:#ECFDF5;">
             <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2">
@@ -418,8 +420,8 @@
           </div>
         </div>
 
-        <!-- 4 Logithèque -->
-        <div class="univers-card reveal delay-4" style="--card-color:#EA580C;">
+        <!-- 4 Logithèque (masquée temporairement, retirer style pour réactiver) -->
+        <div class="univers-card reveal delay-4" style="--card-color:#EA580C; display:none;">
           <p class="univers-number">Bibliothèque 04</p>
           <!-- EMPLACEMENT BANNIÈRE 1:1 — Logithèque Premium (1080x1080 recommandé) -->
           <div class="lib-banner-slot" id="banner-logi">
@@ -449,7 +451,7 @@
           <p style="font-size:.8125rem;font-weight:700;color:#EA580C;margin-top:10px;">50+ outils et logiciels inclus</p>
         </div>
 
-        <!-- 5 Bonus -->
+        <!-- 5 Première Vente en Ligne -->
         <div class="univers-card reveal delay-5" style="--card-color:#D97706;">
           <p class="univers-number">Bibliothèque 05</p>
           <div class="univers-icon" style="background:#FFFBEB;">
@@ -457,15 +459,15 @@
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
             </svg>
           </div>
-          <p class="univers-name">Bonus & Mises à Jour</p>
-          <p class="univers-desc">Section réservée aux bonus, nouvelles ressources, mises à jour et contenus exclusifs ajoutés régulièrement pour les membres actifs.</p>
+          <p class="univers-name">Première Vente en Ligne</p>
+          <p class="univers-desc">Le guide pratique pour décrocher vos premiers revenus en ligne — de l'acquisition client à la mise en pratique, étape par étape.</p>
           <div class="univers-tags">
-            <span class="univers-tag">Contenus exclusifs</span>
-            <span class="univers-tag">Nouvelles ressources</span>
-            <span class="univers-tag">Mises à jour</span>
-            <span class="univers-tag">Surprises membres</span>
+            <span class="univers-tag">Acquisition client</span>
+            <span class="univers-tag">Vente en ligne</span>
+            <span class="univers-tag">Premiers revenus</span>
+            <span class="univers-tag">Mise en pratique rapide</span>
           </div>
-        </div><!-- /univers-card Bonus -->
+        </div><!-- /univers-card Première Vente -->
 
         <!-- 6 — 500 Idées de Business -->
         <div class="univers-card reveal delay-6" style="--card-color:#DC2626;">
@@ -893,6 +895,12 @@
 
       <!-- Témoignages publiés dynamiques -->
       <div id="dynamicTestimonials" style="margin-top:48px;"></div>
+
+      <!-- Carrousel de captures d'écran (témoignages WhatsApp, etc.) -->
+      <div id="capturesCarouselWrap" class="captures-carousel-wrap" style="display:none;">
+        <p class="captures-carousel-title">Ce que disent nos membres</p>
+        <div id="capturesCarousel" class="captures-carousel"></div>
+      </div>
     </div>
   </section>
 
@@ -912,7 +920,7 @@
             Qu'est-ce que Nouvora Labs exactement ?
             <div class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
           </div>
-          <div class="faq-answer">Nouvora Labs est un portail numérique premium donnant accès à 5 grandes bibliothèques de ressources : Méga Ressources, Kit Business en Ligne, Prompts IA, Logithèque Premium et Bonus & Mises à Jour. Chaque bibliothèque est disponible sous forme de document PDF organisé et téléchargeable.</div>
+          <div class="faq-answer">Nouvora Labs est un portail numérique premium donnant accès à 5 grandes bibliothèques de ressources : Méga Ressources, Kit Business en Ligne, Prompts IA, Première Vente en Ligne et 500 Idées de Business Rentables. Chaque bibliothèque est disponible sous forme de document PDF organisé et téléchargeable.</div>
         </div>
 
         <div class="faq-item">
@@ -928,7 +936,7 @@
             Les bibliothèques sont-elles mises à jour régulièrement ?
             <div class="faq-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
           </div>
-          <div class="faq-answer">Oui. Les bibliothèques sont enrichies régulièrement avec de nouveaux contenus, ressources et bonus. La section "Bonus & Mises à Jour" est spécialement dédiée aux nouveautés ajoutées pour les membres actifs.</div>
+          <div class="faq-answer">Oui. Les bibliothèques sont enrichies régulièrement avec de nouveaux contenus et ressources. Chaque mise à jour est ajoutée directement dans la bibliothèque concernée, accessible depuis votre tableau de bord.</div>
         </div>
 
         <div class="faq-item">
@@ -986,15 +994,8 @@
     <div class="footer-grid">
 
       <div class="footer-brand">
-        <a href="index.html" class="navbar-logo" style="margin-bottom:4px;display:inline-flex;">
-          <div class="navbar-logo-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/>
-              <line x1="12" y1="22" x2="12" y2="15.5"/>
-              <polyline points="22 8.5 12 15.5 2 8.5"/>
-            </svg>
-          </div>
-          <span class="navbar-logo-text" style="color:white;">Nouvora <span>Labs</span></span>
+        <a href="index.html" class="navbar-logo" style="margin-bottom:4px;display:inline-flex;align-items:center;">
+          <img src="assets/images/logo-full.png" alt="Nouvora Labs" style="height:34px;width:auto;display:block;" />
         </a>
         <p>Apprendre. Créer. Évoluer.<br/>Le portail numérique premium pour les francophones ambitieux.</p>
         <div class="footer-social" aria-label="Réseaux sociaux">
@@ -1026,8 +1027,9 @@
           <li><a href="app.html">Méga Ressources</a></li>
           <li><a href="app.html">Kit Business en Ligne</a></li>
           <li><a href="app.html">Prompts IA</a></li>
-          <li><a href="app.html">Logithèque Premium</a></li>
-          <li><a href="app.html">Bonus & Mises à Jour</a></li>
+          <li style="display:none;"><a href="app.html">Logithèque Premium</a></li>
+          <li><a href="app.html">Première Vente en Ligne</a></li>
+          <li><a href="app.html">500 Idées de Business</a></li>
         </ul>
       </div>
 
@@ -1078,6 +1080,25 @@
   text-decoration: none; transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .whatsapp-fab:hover { transform: scale(1.08) translateY(-2px); box-shadow: 0 8px 28px rgba(37,211,102,0.45), 0 4px 12px rgba(0,0,0,0.14); }
+
+/* ── Carrousel de captures d'écran ── */
+.captures-carousel-wrap { margin-top: 48px; }
+.captures-carousel-title { font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 16px; text-align: center; }
+.captures-carousel {
+  display: flex; gap: 16px; overflow-x: auto; padding: 4px 4px 16px;
+  scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+.captures-carousel::-webkit-scrollbar { height: 6px; }
+.captures-carousel::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 10px; }
+.capture-card {
+  flex: 0 0 auto; scroll-snap-align: start;
+  width: 240px; border-radius: 14px; overflow: hidden;
+  box-shadow: 0 2px 10px rgba(15,23,42,0.08); border: 1px solid var(--border-light);
+  background: #fff;
+}
+.capture-card img { width: 100%; height: auto; display: block; }
+@media (max-width: 640px) { .capture-card { width: 200px; } }
 </style>
 
   <script src="assets/js/main.js"></script>
@@ -1249,6 +1270,10 @@
       margin-bottom: 16px;
       overflow: hidden;
       position: relative;
+    }
+    .lib-banner-slot.filled {
+      background: none;
+      border: none;
     }
     .lib-banner-slot img {
       width: 100%; height: 100%;
@@ -1448,6 +1473,11 @@
             <p style="font-size:.8125rem;color:#64748B;">Mobile Money · Carte bancaire · Transfert</p>
           </div>
 
+          <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5" width="18" height="18" style="flex-shrink:0;"><polyline points="20 6 9 17 4 12"/></svg>
+            <span style="font-size:.8125rem;color:#166534;font-weight:600;">Accès immédiat aux 5 bibliothèques (300+ formations) dès validation du paiement</span>
+          </div>
+
           <!-- Bouton paiement -->
           <button onclick="simulatePayment()" class="btn btn-primary btn-full" id="pay-btn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
@@ -1600,7 +1630,7 @@
     }
 
     /* ── Connexion (compte existant) ── */
-    function submitLogin() {
+    async function submitLogin() {
       const email    = document.getElementById('login-email').value.trim();
       const password = document.getElementById('login-password').value;
       const errorBox = document.getElementById('login-error');
@@ -1616,26 +1646,44 @@
         return;
       }
 
-      let users = [];
-      try { users = JSON.parse(localStorage.getItem('nouvora_admin_users')) || []; } catch {}
-      const user = users.find(u => (u.email || '').toLowerCase() === email.toLowerCase());
-
-      if (!user || user.password !== password) {
-        errorText.textContent = 'Email ou mot de passe incorrect.';
-        errorBox.style.display = '';
-        return;
+      /* Connexion via Supabase Auth (vrai système, mot de passe jamais en clair) */
+      if (isSupabaseReady()) {
+        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({ email, password });
+        if (authError || !authData?.user) {
+          errorText.textContent = 'Email ou mot de passe incorrect.';
+          errorBox.style.display = '';
+          return;
+        }
+        const { data: profile } = await supabase.from('users').select('*').eq('id', authData.user.id).single();
+        if (!profile || (profile.statut !== 'premium' && profile.statut !== 'admin')) {
+          errorText.textContent = 'Aucun accès premium trouvé pour cet email.';
+          errorCta.style.display = '';
+          errorBox.style.display = '';
+          await supabase.auth.signOut();
+          return;
+        }
+        localStorage.setItem('nouvora_user_role', profile.statut);
+        localStorage.setItem('nouvora_user_email', profile.email);
+        window.location.href = 'app.html';
+      } else {
+        /* Fallback localStorage (hors-ligne / Supabase non configuré) */
+        let users = [];
+        try { users = JSON.parse(localStorage.getItem('nouvora_admin_users')) || []; } catch {}
+        const user = users.find(u => (u.email || '').toLowerCase() === email.toLowerCase());
+        if (!user || user.password !== password) {
+          errorText.textContent = 'Email ou mot de passe incorrect.';
+          errorBox.style.display = '';
+          return;
+        }
+        if (user.statut !== 'premium' && user.statut !== 'admin') {
+          errorText.textContent = 'Aucun accès premium trouvé pour cet email.';
+          errorCta.style.display = '';
+          errorBox.style.display = '';
+          return;
+        }
+        localStorage.setItem('nouvora_user_role', user.statut);
+        window.location.href = 'app.html';
       }
-
-      if (user.statut !== 'premium' && user.statut !== 'admin') {
-        errorText.textContent = 'Aucun accès premium trouvé pour cet email. Inscrivez-vous pour débloquer l\'accès.';
-        errorCta.style.display = '';
-        errorBox.style.display = '';
-        return;
-      }
-
-      /* Connexion réussie : restaurer la session */
-      localStorage.setItem('nouvora_user_role', user.statut);
-      window.location.href = 'app.html';
     }
 
     /* ── Step 1 → Step 2 (Paiement) ── */
@@ -1698,48 +1746,91 @@
     }
 
     /* ── Après paiement validé ── */
-    function onPaymentSuccess(paymentResult) {
+    async function onPaymentSuccess(paymentResult) {
       const u = window._nlPendingUser || {};
-
-      /* ── Enregistrer l'utilisateur dans la liste admin ── */
-      const ADMIN_USERS_KEY = 'nouvora_admin_users';
-      let users = [];
-      try { users = JSON.parse(localStorage.getItem(ADMIN_USERS_KEY)) || []; } catch {}
-      const newUser = {
-        id:     Date.now(),
-        nom:    u.nom || '',
-        prenom: u.prenom || '',
-        email:  u.email || '',
-        password: u.password || '',
-        statut: 'premium',
-        date:   new Date().toISOString(),
-      };
-      users.push(newUser);
-      localStorage.setItem(ADMIN_USERS_KEY, JSON.stringify(users));
-
-      /* ── Enregistrer le paiement dans la liste admin ── */
-      const ADMIN_PAYMENTS_KEY = 'nouvora_admin_payments';
-      let payments = [];
-      try { payments = JSON.parse(localStorage.getItem(ADMIN_PAYMENTS_KEY)) || []; } catch {}
       const montantPaye = getActivePrice();
-      payments.push({
-        id:      Date.now(),
-        nom:     `${u.prenom || ''} ${u.nom || ''}`.trim(),
-        email:   u.email || '',
-        montant: montantPaye,
-        date:    new Date().toISOString(),
-        statut:  'validé',
-        transactionId: (paymentResult && paymentResult.transactionId) || null,
-      });
-      localStorage.setItem(ADMIN_PAYMENTS_KEY, JSON.stringify(payments));
 
-      /* ── Attribuer le rôle premium pour la session courante ── */
-      localStorage.setItem(NL_ROLE_KEY, 'premium');
+      if (isSupabaseReady()) {
+        /* 1. Créer le compte via Supabase Auth (mot de passe géré en sécurité, jamais en clair) */
+        let { data: authData, error: authError } = await supabase.auth.signUp({
+          email: u.email,
+          password: u.password,
+          options: { data: { nom: u.nom || '', prenom: u.prenom || '' } }
+        });
+
+        /* Si le compte existe déjà (ex: tentative précédente), on se connecte simplement */
+        if (authError && authError.message && authError.message.toLowerCase().includes('already')) {
+          const signInRes = await supabase.auth.signInWithPassword({ email: u.email, password: u.password });
+          authData = signInRes.data;
+          authError = signInRes.error;
+        }
+
+        if (authError || !authData?.user) {
+          console.error('[Paiement] Erreur création compte :', authError);
+          alert("Le paiement a été reçu mais la création du compte a échoué. Contactez le support avec votre email pour activation manuelle.");
+          return;
+        }
+
+        const userId = authData.user.id;
+
+        /* 2. Enregistrer le paiement, lié à ce compte */
+        const { data: paymentRow, error: paymentError } = await supabase.from('payments')
+          .insert({
+            user_id: userId,
+            nom:     `${u.prenom || ''} ${u.nom || ''}`.trim(),
+            email:   u.email || '',
+            montant: montantPaye,
+            statut:  'validé',
+            transaction_id: (paymentResult && paymentResult.transactionId) || null,
+          })
+          .select()
+          .single();
+
+        if (paymentError || !paymentRow) {
+          console.error('[Paiement] Erreur enregistrement paiement :', paymentError);
+          alert("Le paiement a été reçu mais n'a pas pu être enregistré. Contactez le support avec votre email pour activation manuelle.");
+          return;
+        }
+
+        /* 3. Activer le Premium via la fonction sécurisée (vérifie le paiement côté serveur) */
+        const { data: claimed, error: claimError } = await supabase.rpc('claim_premium', { p_payment_id: paymentRow.id });
+        if (claimError || !claimed) {
+          console.error('[Paiement] Erreur activation Premium :', claimError);
+          alert("Le paiement a été enregistré mais l'activation Premium a échoué. Contactez le support avec votre email.");
+          return;
+        }
+
+        localStorage.setItem(NL_ROLE_KEY, 'premium');
+        localStorage.setItem('nouvora_user_email', u.email || '');
+
+      } else {
+        /* Fallback localStorage (hors-ligne / Supabase non configuré) */
+        const newUser = {
+          nom: u.nom || '', prenom: u.prenom || '', email: u.email || '',
+          password: u.password || '', statut: 'premium', date: new Date().toISOString(),
+        };
+        const newPayment = {
+          nom: `${u.prenom || ''} ${u.nom || ''}`.trim(), email: u.email || '',
+          montant: montantPaye, date: new Date().toISOString(), statut: 'validé',
+          transaction_id: (paymentResult && paymentResult.transactionId) || null,
+        };
+        const ADMIN_USERS_KEY = 'nouvora_admin_users';
+        let users = [];
+        try { users = JSON.parse(localStorage.getItem(ADMIN_USERS_KEY)) || []; } catch {}
+        users.push({ id: Date.now(), ...newUser });
+        localStorage.setItem(ADMIN_USERS_KEY, JSON.stringify(users));
+
+        const ADMIN_PAYMENTS_KEY = 'nouvora_admin_payments';
+        let payments = [];
+        try { payments = JSON.parse(localStorage.getItem(ADMIN_PAYMENTS_KEY)) || []; } catch {}
+        payments.push({ id: Date.now(), ...newPayment });
+        localStorage.setItem(ADMIN_PAYMENTS_KEY, JSON.stringify(payments));
+
+        localStorage.setItem(NL_ROLE_KEY, 'premium');
+      }
 
       document.getElementById('modal-step-2').style.display = 'none';
       document.getElementById('modal-step-3').style.display = '';
-
-      /* Redirection automatique vers app.html après 2s */
       setTimeout(() => { window.location.href = 'app.html'; }, 2000);
     }
   renderHeroPrice();
@@ -1806,7 +1897,31 @@ function renderDynamicTestimonials() {
 
 function escHtml(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
+/* ── Carrousel de captures d'écran ── */
+function renderCapturesCarousel() {
+  let captures = [];
+  try { captures = JSON.parse(localStorage.getItem('nouvora_captures')) || []; } catch {}
+  const published = captures.filter(c => c.statut === 'published');
+
+  const wrap = document.getElementById('capturesCarouselWrap');
+  const track = document.getElementById('capturesCarousel');
+  if (!wrap || !track) return;
+
+  if (!published.length) {
+    wrap.style.display = 'none';
+    return;
+  }
+
+  wrap.style.display = '';
+  track.innerHTML = published.map(c => `
+    <div class="capture-card">
+      <img src="${c.src}" alt="Témoignage capture d'écran" loading="lazy" />
+    </div>
+  `).join('');
+}
+
 renderDynamicTestimonials();
+renderCapturesCarousel();
 </script>
 </body>
 </html>

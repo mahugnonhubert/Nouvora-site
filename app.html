@@ -281,6 +281,19 @@
       display: flex; align-items: center; justify-content: space-between; gap: 12px;
     }
 
+    /* Bannière visuelle (Méga Ressources / Kit Business uniquement) */
+    .lib-card-banner {
+      width: calc(100% + 56px);
+      margin: -28px -28px 0 -28px;
+      border-radius: 18px 18px 0 0;
+      overflow: hidden;
+      display: block;
+      line-height: 0;
+    }
+    .lib-card-banner img {
+      width: 100%; height: 100%; display: block; object-fit: cover;
+    }
+
     /* Icône unifiée — même fond bleu clair pour toutes */
     .lib-icon {
       width: 48px; height: 48px; border-radius: 13px;
@@ -341,6 +354,21 @@
     }
     .lib-btn svg { width: 15px; height: 15px; }
 
+    .lib-btn-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+    .lib-btn-group .lib-btn { margin-top: 0; flex: 1 1 auto; }
+    .lib-btn--outline {
+      background: transparent;
+      border: 1.5px solid rgba(37,99,235,0.3);
+      color: var(--blue-primary);
+    }
+    .lib-btn--outline:hover {
+      background: var(--blue-light);
+      color: var(--blue-primary);
+      border-color: rgba(37,99,235,0.5);
+      box-shadow: none;
+      transform: translateY(-1px);
+    }
+
     /* 5e carte : centrée */
     .lib-card-bonus {
       grid-column: 1 / -1;
@@ -382,6 +410,8 @@
     @media(max-width: 480px) {
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-client.js"></script>
 </head>
 <body>
 <div class="app-layout">
@@ -391,13 +421,7 @@
   ══════════════════════════════════════ -->
   <aside class="sidebar">
     <div class="sidebar-header">
-      <div class="sidebar-logo-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/>
-          <line x1="12" y1="22" x2="12" y2="15.5"/>
-          <polyline points="22 8.5 12 15.5 2 8.5"/>
-        </svg>
-      </div>
+      <img src="assets/images/logo-icon.png" alt="" style="height:30px;width:auto;display:block;" />
       <span class="sidebar-logo-text">Nouvora <span>Labs</span></span>
     </div>
 
@@ -425,7 +449,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4"/></svg>
         Prompts IA
       </a>
-      <a href="https://drive.google.com/file/d/1Mj_b4S9lneIgydSsh8RE_3zuhW5nnoT7/view?usp=drivesdk" target="_blank" rel="noopener" class="sidebar-link">
+      <a href="https://drive.google.com/file/d/1Mj_b4S9lneIgydSsh8RE_3zuhW5nnoT7/view?usp=drivesdk" target="_blank" rel="noopener" class="sidebar-link" style="display:none;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
         Logithèque Premium
       </a>
@@ -480,11 +504,7 @@
       <div class="lib-header reveal">
         <div class="lib-header-left">
           <div class="lib-header-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/>
-              <line x1="12" y1="22" x2="12" y2="15.5"/>
-              <polyline points="22 8.5 12 15.5 2 8.5"/>
-            </svg>
+            <img src="assets/images/logo-mark-white.png" alt="" style="width:24px;height:auto;display:block;" />
           </div>
           <div>
             <h1 class="lib-header-title">Nouvora Labs</h1>
@@ -523,7 +543,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4"/></svg>
           Prompts IA
         </a>
-        <a href="https://drive.google.com/file/d/1Mj_b4S9lneIgydSsh8RE_3zuhW5nnoT7/view?usp=drivesdk" target="_blank" class="quick-link">
+        <a href="https://drive.google.com/file/d/1Mj_b4S9lneIgydSsh8RE_3zuhW5nnoT7/view?usp=drivesdk" target="_blank" class="quick-link" style="display:none;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
           Logithèque
         </a>
@@ -601,10 +621,16 @@
               +185 autres formations incluses
             </div>
           </div>
-          <button class="lib-btn resource-btn" data-href="https://drive.google.com/file/d/1N493nBLFPrbFsac0-hqdp3thTdYjxbR1/view?usp=drivesdk">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="9 11 12 14 22 4"/></svg>
-            Explorer la Collection
-          </button>
+          <div class="lib-btn-group">
+            <button class="lib-btn resource-btn" data-href="https://drive.google.com/file/d/1NtKjuQb-x0zsPoguQ1zMC_dtMVg904Ph/view?usp=drivesdk">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="9 11 12 14 22 4"/></svg>
+              Explorer la Collection
+            </button>
+            <button class="lib-btn lib-btn--outline resource-btn" data-href="https://drive.google.com/uc?export=download&id=1NtKjuQb-x0zsPoguQ1zMC_dtMVg904Ph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Télécharger
+            </button>
+          </div>
         </div>
 
         <!-- 2 : KIT BUSINESS -->
@@ -667,10 +693,16 @@
               +20 autres formations incluses
             </div>
           </div>
-          <button class="lib-btn resource-btn" data-href="https://drive.google.com/file/d/1MxBz0lxGp_wHfBRHsVIh6Yz7rf3Sr5ua/view?usp=drivesdk">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="9 11 12 14 22 4"/></svg>
-            Explorer le Kit
-          </button>
+          <div class="lib-btn-group">
+            <button class="lib-btn resource-btn" data-href="https://drive.google.com/file/d/1NxFU0j_KTQi0Ytn7lhjNI6UOlWLNzswt/view?usp=drivesdk">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="9 11 12 14 22 4"/></svg>
+              Explorer le Kit
+            </button>
+            <button class="lib-btn lib-btn--outline resource-btn" data-href="https://drive.google.com/uc?export=download&id=1NxFU0j_KTQi0Ytn7lhjNI6UOlWLNzswt">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Télécharger
+            </button>
+          </div>
         </div>
 
         <!-- 3 -->
@@ -697,14 +729,20 @@
               +50 prompts supplémentaires inclus
             </div>
           </div>
-          <button class="lib-btn resource-btn" data-href="https://drive.google.com/file/d/1N6r-3J0C7JgKQPqJXz9FZ0xcSDQ6XktF/view?usp=drivesdk">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="9 11 12 14 22 4"/></svg>
-            Découvrir les Prompts
-          </button>
+          <div class="lib-btn-group">
+            <button class="lib-btn resource-btn" data-href="https://drive.google.com/file/d/1NrqXKUcShX2_rdhy1HRk2_QWvLuvMrgx/view?usp=drivesdk">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="9 11 12 14 22 4"/></svg>
+              Découvrir les Prompts
+            </button>
+            <button class="lib-btn lib-btn--outline resource-btn" data-href="https://drive.google.com/uc?export=download&id=1NrqXKUcShX2_rdhy1HRk2_QWvLuvMrgx">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Télécharger
+            </button>
+          </div>
         </div>
 
-        <!-- 4 -->
-        <div class="lib-card reveal delay-4">
+        <!-- 4 — Logiciels (masquée temporairement, retirer style pour réactiver) -->
+        <div class="lib-card reveal delay-4" style="display:none;">
           <div class="lib-card-header">
                         <span class="lib-badge">Bibliothèque 04</span>
           </div>
@@ -724,10 +762,16 @@
               +30 outils et logiciels supplémentaires
             </div>
           </div>
-          <button class="lib-btn resource-btn" data-href="https://drive.google.com/file/d/1Mj_b4S9lneIgydSsh8RE_3zuhW5nnoT7/view?usp=drivesdk">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="9 11 12 14 22 4"/></svg>
-            Accéder aux Logiciels
-          </button>
+          <div class="lib-btn-group">
+            <button class="lib-btn resource-btn" data-href="https://drive.google.com/file/d/1Mj_b4S9lneIgydSsh8RE_3zuhW5nnoT7/view?usp=drivesdk">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="9 11 12 14 22 4"/></svg>
+              Accéder aux Logiciels
+            </button>
+            <button class="lib-btn lib-btn--outline resource-btn" data-href="https://drive.google.com/uc?export=download&id=1Mj_b4S9lneIgydSsh8RE_3zuhW5nnoT7">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Télécharger
+            </button>
+          </div>
         </div>
 
         <!-- 5 — Première Vente en Ligne -->
@@ -754,10 +798,16 @@
               +15 ressources supplémentaires incluses
             </div>
           </div>
-          <button class="lib-btn resource-btn" data-href="https://drive.google.com/file/d/1NEUfGc23KROQ-zSIYVVWoX_l1bt8y_aZ/view?usp=drivesdk">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="9 11 12 14 22 4"/></svg>
-            Découvrir le Guide
-          </button>
+          <div class="lib-btn-group">
+            <button class="lib-btn resource-btn" data-href="https://drive.google.com/file/d/1NnqSTPZgojxU5vXFDYpqynJnXog9UH6o/view?usp=drivesdk">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="9 11 12 14 22 4"/></svg>
+              Découvrir le Guide
+            </button>
+            <button class="lib-btn lib-btn--outline resource-btn" data-href="https://drive.google.com/uc?export=download&id=1NnqSTPZgojxU5vXFDYpqynJnXog9UH6o">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Télécharger
+            </button>
+          </div>
         </div>
 
         <!-- 6 — 500 Idées de Business -->
@@ -791,10 +841,16 @@
               +494 autres idées rentables incluses
             </div>
           </div>
-          <button class="lib-btn resource-btn" data-href="https://drive.google.com/file/d/1OpAY1ZSQZS6vP0ETeuS_rr-hZxVbrLt8/view?usp=drivesdk">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Télécharger les 500 idées
-          </button>
+          <div class="lib-btn-group">
+            <button class="lib-btn resource-btn" data-href="https://drive.google.com/file/d/1OpAY1ZSQZS6vP0ETeuS_rr-hZxVbrLt8/view?usp=drivesdk">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><polyline points="9 11 12 14 22 4"/></svg>
+              Voir le Document
+            </button>
+            <button class="lib-btn lib-btn--outline resource-btn" data-href="https://drive.google.com/uc?export=download&id=1OpAY1ZSQZS6vP0ETeuS_rr-hZxVbrLt8">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Télécharger
+            </button>
+          </div>
         </div>
 
       </div>

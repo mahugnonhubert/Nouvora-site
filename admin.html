@@ -163,19 +163,49 @@
     .wa-fab { position:fixed; bottom:24px; right:24px; z-index:999; width:52px; height:52px; border-radius:50%; background:#25D366; color:white; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 20px rgba(37,211,102,.35); text-decoration:none; transition:transform .2s; }
     .wa-fab:hover { transform:scale(1.08) translateY(-2px); }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/js/supabase-client.js"></script>
   <script src="assets/js/geniuspay-client.js"></script>
 </head>
 <body>
 
-<div class="admin-layout">
+<!-- ═══════════════════════════════════════════════════════════
+     ÉCRAN DE CONNEXION ADMIN — Authentification Supabase réelle
+     L'accès au panneau n'est jamais accordé sur la seule foi
+     d'un drapeau localStorage : on vérifie via supabase.auth
+     puis on relit le "statut" du profil (protégé par RLS).
+═══════════════════════════════════════════════════════════ -->
+<div id="adminLoginGate" style="position:fixed;inset:0;z-index:9999;background:#0F172A;display:flex;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:white;border-radius:18px;padding:36px 32px;width:100%;max-width:380px;box-shadow:0 24px 60px rgba(0,0,0,.3);">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:22px;">
+      <img src="assets/images/logo-icon.png" alt="" style="height:30px;width:auto;display:block;" />
+      <div>
+        <div style="font-size:.95rem;font-weight:800;color:#0F172A;">Nouvora Labs</div>
+        <div style="font-size:.7rem;color:#94A3B8;">Administration</div>
+      </div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <label style="font-size:.75rem;font-weight:700;color:#475569;display:block;margin-bottom:5px;">Email</label>
+      <input type="email" id="adminLoginEmail" placeholder="votre@email.com" style="width:100%;padding:10px 13px;border:1.5px solid #CBD5E1;border-radius:9px;font-size:.9rem;font-family:inherit;" />
+    </div>
+    <div style="margin-bottom:18px;">
+      <label style="font-size:.75rem;font-weight:700;color:#475569;display:block;margin-bottom:5px;">Mot de passe</label>
+      <input type="password" id="adminLoginPassword" placeholder="••••••••" style="width:100%;padding:10px 13px;border:1.5px solid #CBD5E1;border-radius:9px;font-size:.9rem;font-family:inherit;" />
+    </div>
+    <div id="adminLoginError" style="display:none;background:#FEF2F2;color:#B91C1C;font-size:.8rem;font-weight:600;padding:10px 12px;border-radius:9px;margin-bottom:14px;"></div>
+    <button id="adminLoginBtn" onclick="submitAdminLogin()" style="width:100%;padding:12px;border-radius:9px;background:#2563EB;color:white;font-weight:700;font-size:.9rem;border:none;cursor:pointer;">
+      Se connecter
+    </button>
+    <p style="font-size:.72rem;color:#94A3B8;text-align:center;margin-top:16px;">Accès réservé aux comptes administrateurs.</p>
+  </div>
+</div>
+
+<div class="admin-layout" id="adminLayout" style="display:none;">
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-header">
-      <div class="sidebar-logo-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg>
-      </div>
+      <img src="assets/images/logo-icon.png" alt="" style="height:28px;width:auto;display:block;" />
       <div>
         <div class="sidebar-logo-text">Nouvora Labs</div>
         <div class="sidebar-logo-sub">Administration</div>
@@ -219,8 +249,9 @@
     <div class="sidebar-footer">
       <div class="sidebar-footer-user">
         <div class="sidebar-avatar">A</div>
-        <div><div class="sidebar-user-name">Admin</div><div class="sidebar-user-role">Administrateur</div></div>
+        <div><div class="sidebar-user-name" id="adminUserEmail">Admin</div><div class="sidebar-user-role">Administrateur</div></div>
       </div>
+      <button onclick="adminLogout()" style="width:100%;margin-top:10px;padding:8px;border-radius:8px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);font-size:.75rem;font-weight:600;border:none;cursor:pointer;">Se déconnecter</button>
     </div>
   </aside>
 
@@ -508,17 +539,49 @@
 
 <script>
 const USERS_KEY='nouvora_admin_users',RESOURCES_KEY='nouvora_admin_resources',PAYMENTS_KEY='nouvora_admin_payments',TESTI_KEY='nouvora_testimonials',CAPTURES_KEY='nouvora_captures',PRICING_KEY='nouvora_pricing';
-function getUsers(){try{return JSON.parse(localStorage.getItem(USERS_KEY))||[];}catch{return[];}}
-function saveUsers(u){localStorage.setItem(USERS_KEY,JSON.stringify(u));}
-function getResources(){try{return JSON.parse(localStorage.getItem(RESOURCES_KEY))||defaultResources;}catch{return defaultResources;}}
-function saveResources(r){localStorage.setItem(RESOURCES_KEY,JSON.stringify(r));}
-function getPayments(){try{return JSON.parse(localStorage.getItem(PAYMENTS_KEY))||[];}catch{return[];}}
-function getTestimonials(){try{return JSON.parse(localStorage.getItem(TESTI_KEY))||[];}catch{return[];}}
-function saveTestimonials(t){localStorage.setItem(TESTI_KEY,JSON.stringify(t));}
-function getCaptures(){try{return JSON.parse(localStorage.getItem(CAPTURES_KEY))||[];}catch{return[];}}
-function saveCaptures(c){localStorage.setItem(CAPTURES_KEY,JSON.stringify(c));}
-function getPricing(){try{return JSON.parse(localStorage.getItem(PRICING_KEY))||{prixNormal:2000,promoActive:false,prixPromo:2000,badgePromo:'PROMO'};}catch{return{prixNormal:2000,promoActive:false,prixPromo:2000,badgePromo:'PROMO'};}}
-function savePricingData(p){localStorage.setItem(PRICING_KEY,JSON.stringify(p));}
+
+async function getUsers(){
+  if(isSupabaseReady()){const{data}=await supabase.from('users').select('*').order('date',{ascending:false});return data||[];}
+  try{return JSON.parse(localStorage.getItem(USERS_KEY))||[];}catch{return[];}
+}
+async function saveUsers(u){
+  // Pas utilisé directement avec Supabase (upsert par utilisateur)
+  if(!isSupabaseReady())localStorage.setItem(USERS_KEY,JSON.stringify(u));
+}
+async function getResources(){
+  if(isSupabaseReady()){const{data}=await supabase.from('resources').select('*');return data&&data.length?data:defaultResources;}
+  try{return JSON.parse(localStorage.getItem(RESOURCES_KEY))||defaultResources;}catch{return defaultResources;}
+}
+async function saveResources(r){
+  if(isSupabaseReady()){for(const res of r){await supabase.from('resources').upsert({id:String(res.id||res.num),nom:res.nom,desc:res.desc,lien:res.lien});}return;}
+  localStorage.setItem(RESOURCES_KEY,JSON.stringify(r));
+}
+async function getPayments(){
+  if(isSupabaseReady()){const{data}=await supabase.from('payments').select('*').order('date',{ascending:false});return data||[];}
+  try{return JSON.parse(localStorage.getItem(PAYMENTS_KEY))||[];}catch{return[];}
+}
+async function getTestimonials(){
+  if(isSupabaseReady()){const{data}=await supabase.from('testimonials').select('*').order('date',{ascending:false});return data||[];}
+  try{return JSON.parse(localStorage.getItem(TESTI_KEY))||[];}catch{return[];}
+}
+async function saveTestimonials(t){
+  if(!isSupabaseReady())localStorage.setItem(TESTI_KEY,JSON.stringify(t));
+}
+async function getCaptures(){
+  if(isSupabaseReady()){const{data}=await supabase.from('captures').select('*').order('date',{ascending:false});return data||[];}
+  try{return JSON.parse(localStorage.getItem(CAPTURES_KEY))||[];}catch{return[];}
+}
+async function saveCaptures(c){
+  if(!isSupabaseReady())localStorage.setItem(CAPTURES_KEY,JSON.stringify(c));
+}
+async function getPricing(){
+  if(isSupabaseReady()){const{data}=await supabase.from('pricing').select('*').eq('id',1).single();if(data)return{prixNormal:data.prix_normal,promoActive:data.promo_active,prixPromo:data.prix_promo,badgePromo:data.badge_promo};}
+  try{return JSON.parse(localStorage.getItem(PRICING_KEY))||{prixNormal:2000,promoActive:false,prixPromo:2000,badgePromo:'PROMO'};}catch{return{prixNormal:2000,promoActive:false,prixPromo:2000,badgePromo:'PROMO'};}
+}
+async function savePricingData(p){
+  if(isSupabaseReady()){await supabase.from('pricing').update({prix_normal:p.prixNormal,promo_active:p.promoActive,prix_promo:p.prixPromo,badge_promo:p.badgePromo,updated_at:new Date().toISOString()}).eq('id',1);return;}
+  localStorage.setItem(PRICING_KEY,JSON.stringify(p));
+}
 
 const defaultResources=[
   {id:1,num:'01',nom:'Méga Ressources',desc:'La bibliothèque la plus complète.',lien:'https://drive.google.com/file/d/1N493nBLFPrbFsac0-hqdp3thTdYjxbR1/view?usp=drivesdk'},
@@ -546,8 +609,8 @@ function showTab(name,btn){
   ({dashboard:renderDashboard,users:renderUsers,resources:renderResources,payments:renderPayments,testimonials:renderTestimonials,pricing:renderPricing,settings:renderSettings}[name]||function(){})();
 }
 
-function renderDashboard(){
-  const users=getUsers(),pays=getPayments(),all=getTestimonials(),caps=getCaptures();
+async function renderDashboard(){
+  const users=await getUsers(),pays=await getPayments(),all=await getTestimonials(),caps=await getCaptures();
   const premium=users.filter(u=>u.statut==='premium'||u.statut==='admin').length;
   const revenue=pays.filter(p=>p.statut==='validé').reduce((s,p)=>s+(p.montant||0),0);
   document.getElementById('kpiTotal').textContent=users.length;
@@ -561,7 +624,7 @@ function renderDashboard(){
   const approved=all.filter(t=>t.statut==='approved').length+caps.filter(c=>c.statut==='published').length;
   document.getElementById('miniApproved').textContent=approved;
   document.getElementById('miniPending').textContent=pendingN;
-  document.getElementById('miniLibs').textContent=getResources().length;
+  document.getElementById('miniLibs').textContent=(await getResources()).length;
   document.getElementById('miniConv').textContent=(users.length?Math.round(premium/users.length*100):0)+'%';
   const tbody=document.getElementById('recentUsersBody');
   const recent=[...users].reverse().slice(0,5);
@@ -644,8 +707,9 @@ function renderChart(users){
   });
 }
 
-function renderUsers(f=''){
-  const users=getUsers().filter(u=>!f||(u.nom+u.prenom+u.email).toLowerCase().includes(f));
+async function renderUsers(f=''){
+  const allUsers=await getUsers();
+  const users=allUsers.filter(u=>!f||(u.nom+u.prenom+u.email).toLowerCase().includes(f));
   const tbody=document.getElementById('usersTableBody');
   if(!users.length){tbody.innerHTML='<tr><td colspan="6" class="empty-td">Aucun utilisateur</td></tr>';return;}
   tbody.innerHTML=users.map(u=>`<tr style="cursor:pointer;" onclick="openUserDetail(${u.id})">
@@ -660,12 +724,18 @@ function renderUsers(f=''){
     </select></td></tr>`).join('');
 }
 function filterUsers(){renderUsers(document.getElementById('userSearch').value.toLowerCase());}
-function changeRole(id,r){const u=getUsers(),f=u.find(x=>x.id===id);if(f){f.statut=r;saveUsers(u);renderUsers(document.getElementById('userSearch').value.toLowerCase());renderDashboard();}}
+async function changeRole(id,r){
+  if(isSupabaseReady()){await supabase.from('users').update({statut:r}).eq('id',id);}
+  else{const u=await getUsers(),f=u.find(x=>x.id===id);if(f){f.statut=r;await saveUsers(u);}}
+  renderUsers(document.getElementById('userSearch').value.toLowerCase());renderDashboard();
+}
 
-function openUserDetail(id){
-  const u=getUsers().find(x=>x.id===id);
+async function openUserDetail(id){
+  const users=await getUsers();
+  const u=users.find(x=>x.id===id);
   if(!u)return;
-  const pays=getPayments().filter(p=>p.email===u.email);
+  const allPays=await getPayments();
+  const pays=allPays.filter(p=>p.email===u.email);
   const totalPaid=pays.filter(p=>p.statut==='validé').reduce((s,p)=>s+(p.montant||0),0);
 
   document.getElementById('userDetailContent').innerHTML=`
@@ -712,18 +782,22 @@ function openUserDetail(id){
 }
 function closeUserDetail(){document.getElementById('userDetailOverlay').style.display='none';}
 
-function renderResources(){
-  document.getElementById('resourcesGrid').innerHTML=getResources().map(r=>`
+async function renderResources(){
+  const resources=await getResources();
+  document.getElementById('resourcesGrid').innerHTML=resources.map(r=>`
     <div class="res-card"><h4>${escH(r.nom)}</h4>
       <div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="rn-${r.id}" value="${escH(r.nom)}" /></div>
-      <div class="form-group"><label class="form-label">Description</label><textarea class="form-input" id="rd-${r.id}" rows="2">${escH(r.desc)}</textarea></div>
+      <div class="form-group"><label class="form-label">Description</label><textarea class="form-input" id="rd-${r.id}" rows="2">${escH(r.description||r.desc||'')}</textarea></div>
       <div class="form-group"><label class="form-label">Lien Drive</label><input class="form-input" id="rl-${r.id}" value="${escH(r.lien)}" /></div>
       <div style="display:flex;align-items:center;gap:10px;">
-        <button class="btn btn-primary btn-sm" onclick="saveResource(${r.id})">Enregistrer</button>
+        <button class="btn btn-primary btn-sm" onclick="saveResource('${r.id}')">Enregistrer</button>
         <span id="rf-${r.id}" class="save-ok"></span>
       </div></div>`).join('');
 }
-function saveResource(id){const res=getResources(),r=res.find(x=>x.id===id);if(r){r.nom=document.getElementById(`rn-${id}`).value;r.desc=document.getElementById(`rd-${id}`).value;r.lien=document.getElementById(`rl-${id}`).value;saveResources(res);const fb=document.getElementById(`rf-${id}`);fb.textContent='✓ Sauvegardé';fb.classList.add('show');setTimeout(()=>fb.classList.remove('show'),2500);}}
+async function saveResource(id){
+  const res=await getResources(),r=res.find(x=>String(x.id)===String(id));
+  if(r){r.nom=document.getElementById(`rn-${id}`).value;r.desc=document.getElementById(`rd-${id}`).value;r.lien=document.getElementById(`rl-${id}`).value;await saveResources(res);const fb=document.getElementById(`rf-${id}`);fb.textContent='✓ Sauvegardé';fb.classList.add('show');setTimeout(()=>fb.classList.remove('show'),2500);}
+}
 
 let _payStatusFilter='all';
 function setPayFilter(status,btn){
@@ -732,12 +806,13 @@ function setPayFilter(status,btn){
   btn.classList.add('active');
   filterPayments();
 }
-function renderPayments(f=''){
-  let pays=getPayments().filter(p=>!f||(p.nom+p.email).toLowerCase().includes(f));
+async function renderPayments(f=''){
+  const allPays=await getPayments();
+  let pays=allPays.filter(p=>!f||(p.nom+p.email).toLowerCase().includes(f));
   if(_payStatusFilter!=='all'){pays=pays.filter(p=>(p.statut||'en attente')===_payStatusFilter);}
   const sortDir=document.getElementById('paySort')?.value||'desc';
   pays=[...pays].sort((a,b)=>sortDir==='desc'?new Date(b.date||0)-new Date(a.date||0):new Date(a.date||0)-new Date(b.date||0));
-  const pc=document.getElementById('sidebarPayCount');pc.textContent=getPayments().length;pc.style.display=getPayments().length?'':'none';
+  const pc=document.getElementById('sidebarPayCount');pc.textContent=allPays.length;pc.style.display=allPays.length?'':'none';
   const tbody=document.getElementById('paymentsTableBody');
   if(!pays.length){tbody.innerHTML='<tr><td colspan="5" class="empty-td">Aucun paiement</td></tr>';return;}
   tbody.innerHTML=pays.map(p=>`<tr>
@@ -755,16 +830,16 @@ function handleDragOver(e){e.preventDefault();document.getElementById('uploadZon
 function handleDragLeave(e){document.getElementById('uploadZone').classList.remove('drag-over');}
 function handleDrop(e){e.preventDefault();document.getElementById('uploadZone').classList.remove('drag-over');handleFiles(Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/')));}
 function handleFileSelect(e){handleFiles(Array.from(e.target.files));e.target.value='';}
-function handleFiles(files){
-  const caps=getCaptures();let done=0;
+async function handleFiles(files){
+  const caps=await getCaptures();let done=0;
   files.forEach(file=>{const r=new FileReader();r.onload=ev=>{caps.push({id:Date.now()+done,src:ev.target.result,statut:'pending',date:new Date().toISOString().slice(0,10)});done++;if(done===files.length){saveCaptures(caps);renderCaptures();}};r.readAsDataURL(file);});
 }
-function renderCaptures(){
-  const caps=getCaptures();const grid=document.getElementById('capturesGrid');const act=document.getElementById('capturesActions');
+async function renderCaptures(){
+  const caps=await getCaptures();const grid=document.getElementById('capturesGrid');const act=document.getElementById('capturesActions');
   if(!caps.length){grid.innerHTML='';if(act)act.style.display='none';return;}
   if(act)act.style.display='flex';
   grid.innerHTML=caps.map(c=>`<div class="cap-item">
-    <img src="${c.src}" alt="Témoignage" />
+    <img src="${c.src||c.image_url||''}" alt="Témoignage" />
     <span class="cap-status ${c.statut==='published'?'published':'pending'}">${c.statut==='published'?'Publié':'En attente'}</span>
     <div class="cap-overlay">
       ${c.statut!=='published'?`<button class="btn btn-sm btn-success" onclick="updateCap(${c.id},'published')">Publier</button>`
@@ -772,13 +847,13 @@ function renderCaptures(){
       <button class="btn btn-sm btn-danger" onclick="deleteCap(${c.id})" title="Supprimer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
     </div></div>`).join('');
 }
-function updateCap(id,s){const c=getCaptures(),f=c.find(x=>x.id===id);if(f){f.statut=s;saveCaptures(c);renderCaptures();}}
-function deleteCap(id){if(!confirm('Supprimer cette capture ?'))return;saveCaptures(getCaptures().filter(c=>c.id!==id));renderCaptures();}
-function publishAllNew(){const c=getCaptures();c.forEach(x=>{if(x.statut==='pending')x.statut='published';});saveCaptures(c);renderCaptures();}
+async function updateCap(id,s){const c=await getCaptures(),f=c.find(x=>x.id===id);if(f){f.statut=s;await saveCaptures(c);renderCaptures();}}
+async function deleteCap(id){if(!confirm('Supprimer cette capture ?'))return;await saveCaptures((await getCaptures()).filter(c=>c.id!==id));renderCaptures();}
+async function publishAllNew(){const c=await getCaptures();c.forEach(x=>{if(x.statut==='pending')x.statut='published';});await saveCaptures(c);renderCaptures();}
 
 /* TESTI TEXTUELS */
-function renderTestimonials(){
-  const all=getTestimonials();
+async function renderTestimonials(){
+  const all=await getTestimonials();
   const p=all.filter(t=>t.statut==='pending'),ap=all.filter(t=>t.statut==='approved'),rf=all.filter(t=>t.statut==='refused');
   document.getElementById('pendingCount').textContent=p.length?`(${p.length})`:'';
   document.getElementById('approvedCount').textContent=ap.length?`(${ap.length})`:'';
@@ -801,8 +876,17 @@ function renderTestiList(id,list,canApp,canRef){
     <span style="font-size:.72rem;color:#94A3B8;">${formatDate(t.date)}</span>
   </div>`).join('');
 }
-function moderateTesti(id,s){const all=getTestimonials(),t=all.find(x=>x.id===id);if(t){t.statut=s;saveTestimonials(all);renderTestimonials();}}
-function deleteTesti(id){if(!confirm('Supprimer ?'))return;saveTestimonials(getTestimonials().filter(t=>t.id!==id));renderTestimonials();}
+async function moderateTesti(id,s){
+  if(isSupabaseReady()){await supabase.from('testimonials').update({statut:s}).eq('id',id);}
+  else{const all=await getTestimonials(),t=all.find(x=>x.id===id);if(t){t.statut=s;await saveTestimonials(all);}}
+  renderTestimonials();
+}
+async function deleteTesti(id){
+  if(!confirm('Supprimer ?'))return;
+  if(isSupabaseReady()){await supabase.from('testimonials').delete().eq('id',id);}
+  else{await saveTestimonials((await getTestimonials()).filter(t=>t.id!==id));}
+  renderTestimonials();
+}
 function switchTestiTab(name,btn){
   ['pending','approved','refused'].forEach(n=>document.getElementById('testi-'+n).style.display='none');
   document.getElementById('testi-'+name).style.display='';
@@ -810,22 +894,21 @@ function switchTestiTab(name,btn){
   if(btn)btn.style.background='#EFF6FF';
 }
 
-/* TARIFICATION */
-function renderPricing(){
-  const p=getPricing();
+async function renderPricing(){
+  const p=await getPricing();
   document.getElementById('pNormal').value=p.prixNormal||2000;
   document.getElementById('pPromoOn').checked=p.promoActive||false;
   document.getElementById('pPromo').value=p.prixPromo||2000;
   document.getElementById('pBadge').value=p.badgePromo||'PROMO';
   previewPricing();
 }
-function previewPricing(){
+async function previewPricing(){
   const n=Number(document.getElementById('pNormal')?.value)||2000;
   const on=document.getElementById('pPromoOn')?.checked;
   const pr=Number(document.getElementById('pPromo')?.value)||2000;
   const b=document.getElementById('pBadge')?.value||'PROMO';
   const badgeEl=document.getElementById('pvBadge'),crossEl=document.getElementById('pvCrossed'),priceEl=document.getElementById('pvPrice'),gpEl=document.getElementById('pvGenius'),libCountEl=document.getElementById('pvLibCount');
-  if(libCountEl){const nbLibs=getResources().length;libCountEl.textContent=`${nbLibs} bibliothèque${nbLibs>1?'s':''} · Accès illimité · À vie`;}
+  if(libCountEl){const res=await getResources();const nbLibs=res.length;libCountEl.textContent=`${nbLibs} bibliothèque${nbLibs>1?'s':''} · Accès illimité · À vie`;}
   if(on){
     if(badgeEl){badgeEl.textContent=b;badgeEl.style.display='';}
     if(crossEl){crossEl.textContent=n.toLocaleString('fr-FR')+' FCFA';crossEl.style.display='';}
@@ -838,13 +921,13 @@ function previewPricing(){
     if(gpEl)gpEl.textContent=n.toLocaleString('fr-FR')+' FCFA';
   }
 }
-function savePricing(){
+async function savePricing(){
   const p={prixNormal:Number(document.getElementById('pNormal').value)||2000,promoActive:document.getElementById('pPromoOn').checked,prixPromo:Number(document.getElementById('pPromo').value)||2000,badgePromo:document.getElementById('pBadge').value||'PROMO'};
-  savePricingData(p);previewPricing();
+  await savePricingData(p);previewPricing();
   const ok=document.getElementById('pricingOK');ok.style.display='block';setTimeout(()=>ok.style.display='none',3000);
 }
 
-function exportUsers(){const u=getUsers();if(!u.length){alert('Aucun utilisateur.');return;}const csv=['Nom,Prénom,Email,Date,Rôle',...u.map(x=>`${x.nom},${x.prenom},${x.email},${x.date},${x.statut}`)].join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`nouvora-users-${new Date().toISOString().slice(0,10)}.csv`;a.click();}
+async function exportUsers(){const u=await getUsers();if(!u.length){alert('Aucun utilisateur.');return;}const csv=['Nom,Prénom,Email,Date,Rôle',...u.map(x=>`${x.nom},${x.prenom},${x.email},${x.date},${x.statut}`)].join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`nouvora-users-${new Date().toISOString().slice(0,10)}.csv`;a.click();}
 
 /* ── Paramètres généraux ── */
 const SETTINGS_KEY='nouvora_settings';
@@ -882,7 +965,87 @@ function saveSettings(){
   const ok=document.getElementById('settingsOK');ok.style.display='block';setTimeout(()=>ok.style.display='none',3000);
 }
 
-renderDashboard();
+/* ════════════════════════════════════════════════════════════
+   AUTHENTIFICATION ADMIN — Supabase Auth réelle
+   ════════════════════════════════════════════════════════════ */
+
+function showAdminPanel(email) {
+  document.getElementById('adminLoginGate').style.display = 'none';
+  document.getElementById('adminLayout').style.display = 'flex';
+  document.getElementById('adminUserEmail').textContent = email || 'Admin';
+  renderDashboard();
+}
+
+async function checkAdminSession() {
+  if (!isSupabaseReady()) {
+    /* Fallback local UNIQUEMENT pour tester l'interface sans Supabase
+       configuré — non sécurisé, à ne jamais utiliser en production. */
+    if ((localStorage.getItem('nouvora_user_role') || '') === 'admin') {
+      showAdminPanel('Mode local (Supabase non configuré)');
+    }
+    return;
+  }
+
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) return; // reste sur l'écran de connexion
+
+  const { data: profile, error } = await supabase.from('users').select('*').eq('id', session.user.id).single();
+  if (error || !profile || profile.statut !== 'admin') {
+    await supabase.auth.signOut();
+    return;
+  }
+
+  showAdminPanel(profile.email);
+}
+
+async function submitAdminLogin() {
+  const email    = document.getElementById('adminLoginEmail').value.trim();
+  const password = document.getElementById('adminLoginPassword').value;
+  const errBox   = document.getElementById('adminLoginError');
+  const btn      = document.getElementById('adminLoginBtn');
+  errBox.style.display = 'none';
+
+  if (!email || !password) {
+    errBox.textContent = 'Veuillez renseigner votre email et votre mot de passe.';
+    errBox.style.display = '';
+    return;
+  }
+
+  if (!isSupabaseReady()) {
+    errBox.textContent = "Supabase n'est pas configuré sur ce site — connexion impossible.";
+    errBox.style.display = '';
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = 'Connexion…';
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error || !data?.user) {
+    errBox.textContent = 'Email ou mot de passe incorrect.';
+    errBox.style.display = '';
+    btn.disabled = false; btn.textContent = 'Se connecter';
+    return;
+  }
+
+  const { data: profile, error: profErr } = await supabase.from('users').select('*').eq('id', data.user.id).single();
+  if (profErr || !profile || profile.statut !== 'admin') {
+    errBox.textContent = "Ce compte n'a pas les droits administrateur.";
+    errBox.style.display = '';
+    await supabase.auth.signOut();
+    btn.disabled = false; btn.textContent = 'Se connecter';
+    return;
+  }
+
+  showAdminPanel(profile.email);
+}
+
+async function adminLogout() {
+  if (isSupabaseReady()) await supabase.auth.signOut();
+  localStorage.removeItem('nouvora_user_role');
+  location.reload();
+}
+
+checkAdminSession();
 </script>
 </body>
 </html>
