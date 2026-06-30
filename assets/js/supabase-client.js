@@ -17,7 +17,7 @@
    ════════════════════════════════════════════════════════════ */
 
 const SUPABASE_URL      = 'https://wylekbhumvnyoronwuwf.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_jPImGCmPHOAaktC1gILm0A_HLMca26X';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5bGVrYmh1bXZueW9yb253dXdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0Nzc4NTgsImV4cCI6MjA5ODA1Mzg1OH0.rNAOAoeyCYBCUTU561AcnOkTRqe6iE7nUUw5WnD8K-Y';
 
 let supabase = null;
 if (typeof window !== 'undefined' && window.supabase && SUPABASE_URL.includes('supabase.co')) {
