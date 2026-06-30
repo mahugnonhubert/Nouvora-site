@@ -177,7 +177,7 @@ create index if not exists idx_testimonials_statut on testimonials (statut);
 create table if not exists resources (
   id          text primary key,        -- ex: 'mega', 'kit', 'idees500'
   nom         text not null,
-  desc        text,
+  description text,
   lien        text,                     -- lien Google Drive
   updated_at  timestamptz not null default now()
 );
