@@ -16,8 +16,8 @@
       fichier (mêmes noms, même forme de données retournée)
    ════════════════════════════════════════════════════════════ */
 
-const SUPABASE_URL      = 'https://VOTRE-PROJET.supabase.co';   // ← à remplacer
-const SUPABASE_ANON_KEY = 'VOTRE-CLE-ANON-PUBLIQUE';            // ← à remplacer
+const SUPABASE_URL      = 'https://wylekbhumvnyoronwuwf.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_jPImGCmPHOAaktC1gILm0A_HLMca26X';
 
 let supabase = null;
 if (typeof window !== 'undefined' && window.supabase && SUPABASE_URL.includes('supabase.co')) {
@@ -37,12 +37,11 @@ async function getUsers() {
   return data;
 }
 
-async function saveUser(user) {
-  if (!isSupabaseReady()) return null;
-  const { data, error } = await supabase.from('users').upsert(user).select().single();
-  if (error) { console.error('[Supabase] saveUser:', error); return null; }
-  return data;
-}
+/* Note : la création d'utilisateurs se fait désormais exclusivement
+   via supabase.auth.signUp() (voir index.html, fonction onPaymentSuccess)
+   — il n'existe plus de fonction saveUser() qui insère directement
+   dans la table users, puisque celle-ci ne contient plus de mot de
+   passe et que sa clé primaire est liée à auth.users. */
 
 async function changeUserRole(id, statut) {
   if (!isSupabaseReady()) return null;
