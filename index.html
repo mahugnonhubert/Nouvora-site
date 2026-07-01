@@ -1753,22 +1753,21 @@
       );
     }
 
-    /* ── Client Supabase (depuis supabase-client.js) ── */
-    let _sbClient = null;
+    /* ── Client Supabase — utilise window._sbClient de supabase-client.js ── */
     function _getClient() {
-      if (_sbClient) return _sbClient;
-      if (typeof supabase !== 'undefined' && supabase) { _sbClient = supabase; return _sbClient; }
+      if (window._sbClient) return window._sbClient;
+      /* Fallback : créer le client si pas encore initialisé */
       try {
-        if (window.supabase && window.supabase.createClient) {
-          _sbClient = window.supabase.createClient(
+        const lib = window.supabase;
+        if (lib && typeof lib.createClient === 'function') {
+          window._sbClient = lib.createClient(
             'https://wylekbhumvnyoronwuwf.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5bGVrYmh1bXZueW9yb253dXdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0Nzc4NTgsImV4cCI6MjA5ODA1Mzg1OH0.rNAOAoeyCYBCUTU561AcnOkTRqe6iE7nUUw5WnD8K-Y'
           );
         }
       } catch(e) { console.error('[SB init]', e); }
-      return _sbClient;
+      return window._sbClient || null;
     }
-    _getClient();
 
     /* ── Après paiement validé ── */
     async function onPaymentSuccess(paymentResult) {

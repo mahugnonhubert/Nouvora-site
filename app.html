@@ -1195,7 +1195,7 @@ document.querySelectorAll('.sidebar-link[href*="drive.google"], .quick-link[href
 const logoutBtn = document.getElementById('logoutBtn');
 if (logoutBtn) {
   logoutBtn.addEventListener('click', async () => {
-    if (isSupabaseReady()) await supabase.auth.signOut();
+    if (isSupabaseReady()) await getDb().auth.signOut();
     localStorage.removeItem('nouvora_user_role');
     window.location.href = 'index.html';
   });
@@ -1210,7 +1210,7 @@ async function initAppAuth() {
     return;
   }
 
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await getDb().auth.getSession();
   if (!session) {
     _currentUserStatut = 'visiteur';
     updateRoleBadge();

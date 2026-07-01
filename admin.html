@@ -541,7 +541,7 @@
 const USERS_KEY='nouvora_admin_users',RESOURCES_KEY='nouvora_admin_resources',PAYMENTS_KEY='nouvora_admin_payments',TESTI_KEY='nouvora_testimonials',CAPTURES_KEY='nouvora_captures',PRICING_KEY='nouvora_pricing';
 
 async function getUsers(){
-  if(isSupabaseReady()){const{data}=await supabase.from('users').select('*').order('date',{ascending:false});return data||[];}
+  if(isSupabaseReady()){const{data}=await getDb().from('users').select('*').order('date',{ascending:false});return data||[];}
   try{return JSON.parse(localStorage.getItem(USERS_KEY))||[];}catch{return[];}
 }
 async function saveUsers(u){
@@ -549,37 +549,37 @@ async function saveUsers(u){
   if(!isSupabaseReady())localStorage.setItem(USERS_KEY,JSON.stringify(u));
 }
 async function getResources(){
-  if(isSupabaseReady()){const{data}=await supabase.from('resources').select('*');return data&&data.length?data:defaultResources;}
+  if(isSupabaseReady()){const{data}=await getDb().from('resources').select('*');return data&&data.length?data:defaultResources;}
   try{return JSON.parse(localStorage.getItem(RESOURCES_KEY))||defaultResources;}catch{return defaultResources;}
 }
 async function saveResources(r){
-  if(isSupabaseReady()){for(const res of r){await supabase.from('resources').upsert({id:String(res.id||res.num),nom:res.nom,desc:res.desc,lien:res.lien});}return;}
+  if(isSupabaseReady()){for(const res of r){await getDb().from('resources').upsert({id:String(res.id||res.num),nom:res.nom,desc:res.desc,lien:res.lien});}return;}
   localStorage.setItem(RESOURCES_KEY,JSON.stringify(r));
 }
 async function getPayments(){
-  if(isSupabaseReady()){const{data}=await supabase.from('payments').select('*').order('date',{ascending:false});return data||[];}
+  if(isSupabaseReady()){const{data}=await getDb().from('payments').select('*').order('date',{ascending:false});return data||[];}
   try{return JSON.parse(localStorage.getItem(PAYMENTS_KEY))||[];}catch{return[];}
 }
 async function getTestimonials(){
-  if(isSupabaseReady()){const{data}=await supabase.from('testimonials').select('*').order('date',{ascending:false});return data||[];}
+  if(isSupabaseReady()){const{data}=await getDb().from('testimonials').select('*').order('date',{ascending:false});return data||[];}
   try{return JSON.parse(localStorage.getItem(TESTI_KEY))||[];}catch{return[];}
 }
 async function saveTestimonials(t){
   if(!isSupabaseReady())localStorage.setItem(TESTI_KEY,JSON.stringify(t));
 }
 async function getCaptures(){
-  if(isSupabaseReady()){const{data}=await supabase.from('captures').select('*').order('date',{ascending:false});return data||[];}
+  if(isSupabaseReady()){const{data}=await getDb().from('captures').select('*').order('date',{ascending:false});return data||[];}
   try{return JSON.parse(localStorage.getItem(CAPTURES_KEY))||[];}catch{return[];}
 }
 async function saveCaptures(c){
   if(!isSupabaseReady())localStorage.setItem(CAPTURES_KEY,JSON.stringify(c));
 }
 async function getPricing(){
-  if(isSupabaseReady()){const{data}=await supabase.from('pricing').select('*').eq('id',1).single();if(data)return{prixNormal:data.prix_normal,promoActive:data.promo_active,prixPromo:data.prix_promo,badgePromo:data.badge_promo};}
+  if(isSupabaseReady()){const{data}=await getDb().from('pricing').select('*').eq('id',1).single();if(data)return{prixNormal:data.prix_normal,promoActive:data.promo_active,prixPromo:data.prix_promo,badgePromo:data.badge_promo};}
   try{return JSON.parse(localStorage.getItem(PRICING_KEY))||{prixNormal:2000,promoActive:false,prixPromo:2000,badgePromo:'PROMO'};}catch{return{prixNormal:2000,promoActive:false,prixPromo:2000,badgePromo:'PROMO'};}
 }
 async function savePricingData(p){
-  if(isSupabaseReady()){await supabase.from('pricing').update({prix_normal:p.prixNormal,promo_active:p.promoActive,prix_promo:p.prixPromo,badge_promo:p.badgePromo,updated_at:new Date().toISOString()}).eq('id',1);return;}
+  if(isSupabaseReady()){await getDb().from('pricing').update({prix_normal:p.prixNormal,promo_active:p.promoActive,prix_promo:p.prixPromo,badge_promo:p.badgePromo,updated_at:new Date().toISOString()}).eq('id',1);return;}
   localStorage.setItem(PRICING_KEY,JSON.stringify(p));
 }
 
@@ -725,7 +725,7 @@ async function renderUsers(f=''){
 }
 function filterUsers(){renderUsers(document.getElementById('userSearch').value.toLowerCase());}
 async function changeRole(id,r){
-  if(isSupabaseReady()){await supabase.from('users').update({statut:r}).eq('id',id);}
+  if(isSupabaseReady()){await getDb().from('users').update({statut:r}).eq('id',id);}
   else{const u=await getUsers(),f=u.find(x=>x.id===id);if(f){f.statut=r;await saveUsers(u);}}
   renderUsers(document.getElementById('userSearch').value.toLowerCase());renderDashboard();
 }
@@ -877,13 +877,13 @@ function renderTestiList(id,list,canApp,canRef){
   </div>`).join('');
 }
 async function moderateTesti(id,s){
-  if(isSupabaseReady()){await supabase.from('testimonials').update({statut:s}).eq('id',id);}
+  if(isSupabaseReady()){await getDb().from('testimonials').update({statut:s}).eq('id',id);}
   else{const all=await getTestimonials(),t=all.find(x=>x.id===id);if(t){t.statut=s;await saveTestimonials(all);}}
   renderTestimonials();
 }
 async function deleteTesti(id){
   if(!confirm('Supprimer ?'))return;
-  if(isSupabaseReady()){await supabase.from('testimonials').delete().eq('id',id);}
+  if(isSupabaseReady()){await getDb().from('testimonials').delete().eq('id',id);}
   else{await saveTestimonials((await getTestimonials()).filter(t=>t.id!==id));}
   renderTestimonials();
 }
@@ -986,12 +986,12 @@ async function checkAdminSession() {
     return;
   }
 
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await getDb().auth.getSession();
   if (!session) return; // reste sur l'écran de connexion
 
-  const { data: profile, error } = await supabase.from('users').select('*').eq('id', session.user.id).single();
+  const { data: profile, error } = await getDb().from('users').select('*').eq('id', session.user.id).single();
   if (error || !profile || profile.statut !== 'admin') {
-    await supabase.auth.signOut();
+    await getDb().auth.signOut();
     return;
   }
 
@@ -1019,7 +1019,7 @@ async function submitAdminLogin() {
 
   btn.disabled = true; btn.textContent = 'Connexion…';
 
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await getDb().auth.signInWithPassword({ email, password });
   if (error || !data?.user) {
     errBox.textContent = 'Email ou mot de passe incorrect.';
     errBox.style.display = '';
@@ -1027,11 +1027,11 @@ async function submitAdminLogin() {
     return;
   }
 
-  const { data: profile, error: profErr } = await supabase.from('users').select('*').eq('id', data.user.id).single();
+  const { data: profile, error: profErr } = await getDb().from('users').select('*').eq('id', data.user.id).single();
   if (profErr || !profile || profile.statut !== 'admin') {
     errBox.textContent = "Ce compte n'a pas les droits administrateur.";
     errBox.style.display = '';
-    await supabase.auth.signOut();
+    await getDb().auth.signOut();
     btn.disabled = false; btn.textContent = 'Se connecter';
     return;
   }
@@ -1040,7 +1040,7 @@ async function submitAdminLogin() {
 }
 
 async function adminLogout() {
-  if (isSupabaseReady()) await supabase.auth.signOut();
+  if (isSupabaseReady()) await getDb().auth.signOut();
   localStorage.removeItem('nouvora_user_role');
   location.reload();
 }
