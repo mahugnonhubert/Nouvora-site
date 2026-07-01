@@ -1753,15 +1753,22 @@
       );
     }
 
-    /* ── Client Supabase inline ── */
-    const _SB_URL = 'https://wylekbhumvnyoronwuwf.supabase.co';
-    const _SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5bGVrYmh1bXZueW9yb253dXdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0Nzc4NTgsImV4cCI6MjA5ODA1Mzg1OH0.rNAOAoeyCYBCUTU561AcnOkTRqe6iE7nUUw5WnD8K-Y';
+    /* ── Client Supabase (depuis supabase-client.js) ── */
     let _sbClient = null;
-    try {
-      if (window.supabase && window.supabase.createClient) {
-        _sbClient = window.supabase.createClient(_SB_URL, _SB_KEY);
-      }
-    } catch(e) { console.error('[SB init]', e); }
+    function _getClient() {
+      if (_sbClient) return _sbClient;
+      if (typeof supabase !== 'undefined' && supabase) { _sbClient = supabase; return _sbClient; }
+      try {
+        if (window.supabase && window.supabase.createClient) {
+          _sbClient = window.supabase.createClient(
+            'https://wylekbhumvnyoronwuwf.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5bGVrYmh1bXZueW9yb253dXdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0Nzc4NTgsImV4cCI6MjA5ODA1Mzg1OH0.rNAOAoeyCYBCUTU561AcnOkTRqe6iE7nUUw5WnD8K-Y'
+          );
+        }
+      } catch(e) { console.error('[SB init]', e); }
+      return _sbClient;
+    }
+    _getClient();
 
     /* ── Après paiement validé ── */
     async function onPaymentSuccess(paymentResult) {
@@ -1769,11 +1776,9 @@
       const u = window._nlPendingUser || {};
       const montantPaye = getActivePrice();
 
-      alert('DEBUG: _sbClient = ' + (_sbClient ? 'OK' : 'NULL') + ' | window.supabase = ' + (typeof window.supabase));
-
-      if (_sbClient) {
+      if (_getClient()) {
         /* 1. Créer le compte via Supabase Auth (mot de passe géré en sécurité, jamais en clair) */
-        let { data: authData, error: authError } = await _sbClient.auth.signUp({
+        let { data: authData, error: authError } = await _getClient().auth.signUp({
           email: u.email,
           password: u.password,
           options: { data: { nom: u.nom || '', prenom: u.prenom || '' } }
@@ -1781,7 +1786,7 @@
 
         /* Si le compte existe déjà (ex: tentative précédente), on se connecte simplement */
         if (authError && authError.message && authError.message.toLowerCase().includes('already')) {
-          const signInRes = await _sbClient.auth.signInWithPassword({ email: u.email, password: u.password });
+          const signInRes = await _getClient().auth.signInWithPassword({ email: u.email, password: u.password });
           authData = signInRes.data;
           authError = signInRes.error;
         }
@@ -1795,7 +1800,7 @@
         const userId = authData.user.id;
 
         /* 2. Enregistrer le paiement, lié à ce compte */
-        const { data: paymentRow, error: paymentError } = await _sbClient.from('payments')
+        const { data: paymentRow, error: paymentError } = await _getClient().from('payments')
           .insert({
             user_id: userId,
             nom:     `${u.prenom || ''} ${u.nom || ''}`.trim(),
@@ -1814,7 +1819,7 @@
         }
 
         /* 3. Activer le Premium via la fonction sécurisée (vérifie le paiement côté serveur) */
-        const { data: claimed, error: claimError } = await _sbClient.rpc('claim_premium', { p_payment_id: paymentRow.id });
+        const { data: claimed, error: claimError } = await _getClient().rpc('claim_premium', { p_payment_id: paymentRow.id });
         if (claimError || !claimed) {
           console.error('[Paiement] Erreur activation Premium :', claimError);
           alert("Le paiement a été enregistré mais l'activation Premium a échoué. Contactez le support avec votre email.");

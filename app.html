@@ -1129,42 +1129,29 @@
 
 <script>
 /* ══════════════════════════════════════
-   SYSTÈME DE RÔLES NOUVORA
+   SYSTÈME DE RÔLES NOUVORA — Supabase Auth
    Rôles : visiteur | premium | admin
-   - visiteur : peut voir, ne peut pas ouvrir
-   - premium  : accès complet aux ressources
-   - admin    : accès complet + jamais bloqué
 ══════════════════════════════════════ */
 
-const ROLE_KEY = 'nouvora_user_role';
-
-function getUserRole() {
-  return localStorage.getItem(ROLE_KEY) || 'visiteur';
-}
+let _currentUserStatut = 'visiteur';
 
 function hasAccess() {
-  const role = getUserRole();
-  return role === 'premium' || role === 'admin';
+  return _currentUserStatut === 'premium' || _currentUserStatut === 'admin';
 }
 
 function isAdmin() {
-  return getUserRole() === 'admin';
+  return _currentUserStatut === 'admin';
 }
 
-/* Mettre à jour le badge de rôle visible dans la sidebar si présent */
 function updateRoleBadge() {
-  const role = getUserRole();
   const badge = document.getElementById('userRoleBadge');
   if (badge) {
     const labels = { visiteur: 'Visiteur', premium: 'Premium', admin: 'Admin' };
-    badge.textContent = labels[role] || role;
-    badge.className = 'role-badge role-badge--' + role;
+    badge.textContent = labels[_currentUserStatut] || _currentUserStatut;
+    badge.className = 'role-badge role-badge--' + _currentUserStatut;
   }
-  /* Afficher/masquer liens admin */
   const adminLinks = document.querySelectorAll('.admin-only');
-  adminLinks.forEach(el => {
-    el.style.display = isAdmin() ? '' : 'none';
-  });
+  adminLinks.forEach(el => { el.style.display = isAdmin() ? '' : 'none'; });
 }
 
 const modal = document.getElementById('premiumModal');
@@ -1180,9 +1167,7 @@ function closePremiumModal() {
 }
 
 modalClose.addEventListener('click', closePremiumModal);
-modal.addEventListener('click', (e) => {
-  if (e.target === modal) closePremiumModal();
-});
+modal.addEventListener('click', (e) => { if (e.target === modal) closePremiumModal(); });
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && modal.classList.contains('active')) closePremiumModal();
 });
@@ -1202,15 +1187,56 @@ document.querySelectorAll('.resource-btn').forEach(btn => {
 /* Liens sidebar/quick-links vers ressources Drive */
 document.querySelectorAll('.sidebar-link[href*="drive.google"], .quick-link[href*="drive.google"]').forEach(link => {
   link.addEventListener('click', (e) => {
-    if (!hasAccess()) {
-      e.preventDefault();
-      openPremiumModal();
-    }
+    if (!hasAccess()) { e.preventDefault(); openPremiumModal(); }
   });
 });
 
-/* Init */
-updateRoleBadge();
+/* Bouton déconnexion */
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', async () => {
+    if (isSupabaseReady()) await supabase.auth.signOut();
+    localStorage.removeItem('nouvora_user_role');
+    window.location.href = 'index.html';
+  });
+}
+
+/* Init — vérifier la session Supabase */
+async function initAppAuth() {
+  if (!isSupabaseReady()) {
+    /* Fallback localStorage */
+    _currentUserStatut = localStorage.getItem('nouvora_user_role') || 'visiteur';
+    updateRoleBadge();
+    return;
+  }
+
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    _currentUserStatut = 'visiteur';
+    updateRoleBadge();
+    return;
+  }
+
+  /* Récupérer le statut depuis la table users */
+  const { data: userRow } = await supabase
+    .from('users')
+    .select('statut, prenom, nom')
+    .eq('id', session.user.id)
+    .single();
+
+  if (userRow) {
+    _currentUserStatut = userRow.statut || 'visiteur';
+    /* Mettre à jour le nom affiché si présent */
+    const nameEl = document.getElementById('userName');
+    if (nameEl && userRow.prenom) nameEl.textContent = userRow.prenom + ' ' + (userRow.nom || '');
+  }
+
+  /* Sync localStorage pour compatibilité */
+  localStorage.setItem('nouvora_user_role', _currentUserStatut);
+  updateRoleBadge();
+}
+
+document.addEventListener('DOMContentLoaded', initAppAuth);
 </script>
 </body>
 </html>
