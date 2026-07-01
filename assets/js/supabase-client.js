@@ -1,34 +1,38 @@
 /* ════════════════════════════════════════════════════════════
-   NOUVORA LABS — Client Supabase (préparation)
-   ────────────────────────────────────────────────────────────
-   Ce fichier n'est PAS chargé par défaut dans index.html /
-   app.html / admin.html. Le site continue de fonctionner avec
-   localStorage tant que ce fichier n'est pas branché.
-
-   POUR ACTIVER SUPABASE :
-   1. Créer un projet sur https://supabase.com
-   2. Exécuter supabase/schema.sql dans l'éditeur SQL
-   3. Renseigner SUPABASE_URL et SUPABASE_ANON_KEY ci-dessous
-   4. Ajouter dans le <head> de index.html / app.html / admin.html :
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-        <script src="assets/js/supabase-client.js"></script>
-   5. Remplacer les appels localStorage par les fonctions de ce
-      fichier (mêmes noms, même forme de données retournée)
+   NOUVORA LABS — Client Supabase
+   Initialisation robuste compatible toutes pages
    ════════════════════════════════════════════════════════════ */
 
 const SUPABASE_URL      = 'https://wylekbhumvnyoronwuwf.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5bGVrYmh1bXZueW9yb253dXdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0Nzc4NTgsImV4cCI6MjA5ODA1Mzg1OH0.rNAOAoeyCYBCUTU561AcnOkTRqe6iE7nUUw5WnD8K-Y';
 
+/* Initialisation — fonctionne même si window.supabase est chargé après */
 let supabase = null;
-if (typeof window !== 'undefined' && window.supabase && SUPABASE_URL.includes('supabase.co')) {
-  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+function _initSupabase() {
+  if (supabase) return supabase;
+  try {
+    if (window.supabase && window.supabase.createClient) {
+      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+  } catch(e) {
+    console.error('[Nouvora] Erreur init Supabase:', e);
+  }
+  return supabase;
+}
+
+/* Appel immédiat + retry au cas où le CDN n'est pas encore prêt */
+_initSupabase();
+if (!supabase) {
+  document.addEventListener('DOMContentLoaded', _initSupabase);
 }
 
 function isSupabaseReady() {
-  return supabase !== null && !SUPABASE_URL.includes('VOTRE-PROJET');
+  if (!supabase) _initSupabase();
+  return supabase !== null;
 }
 
-/* ── UTILISATEURS ─────────────────────────────────────────── */
+/* ── UTILISATEURS ──────────────────────────────────────────── */
 
 async function getUsers() {
   if (!isSupabaseReady()) return [];
@@ -37,12 +41,6 @@ async function getUsers() {
   return data;
 }
 
-/* Note : la création d'utilisateurs se fait désormais exclusivement
-   via supabase.auth.signUp() (voir index.html, fonction onPaymentSuccess)
-   — il n'existe plus de fonction saveUser() qui insère directement
-   dans la table users, puisque celle-ci ne contient plus de mot de
-   passe et que sa clé primaire est liée à auth.users. */
-
 async function changeUserRole(id, statut) {
   if (!isSupabaseReady()) return null;
   const { data, error } = await supabase.from('users').update({ statut }).eq('id', id).select().single();
@@ -50,7 +48,7 @@ async function changeUserRole(id, statut) {
   return data;
 }
 
-/* ── PAIEMENTS ────────────────────────────────────────────── */
+/* ── PAIEMENTS ─────────────────────────────────────────────── */
 
 async function getPayments() {
   if (!isSupabaseReady()) return [];
@@ -66,7 +64,7 @@ async function savePayment(payment) {
   return data;
 }
 
-/* ── TÉMOIGNAGES ──────────────────────────────────────────── */
+/* ── TÉMOIGNAGES ───────────────────────────────────────────── */
 
 async function getTestimonials() {
   if (!isSupabaseReady()) return [];
@@ -89,63 +87,79 @@ async function submitTestimonialToSupabase(nom, pays, texte) {
   return data;
 }
 
-async function moderateTestimonial(id, statut) {
+async function updateTestimonialStatus(id, statut) {
   if (!isSupabaseReady()) return null;
   const { data, error } = await supabase.from('testimonials').update({ statut }).eq('id', id).select().single();
-  if (error) { console.error('[Supabase] moderateTestimonial:', error); return null; }
+  if (error) { console.error('[Supabase] updateTestimonialStatus:', error); return null; }
   return data;
 }
 
-/* ── RESSOURCES ───────────────────────────────────────────── */
+async function deleteTestimonial(id) {
+  if (!isSupabaseReady()) return false;
+  const { error } = await supabase.from('testimonials').delete().eq('id', id);
+  if (error) { console.error('[Supabase] deleteTestimonial:', error); return false; }
+  return true;
+}
+
+/* ── RESSOURCES ────────────────────────────────────────────── */
 
 async function getResources() {
   if (!isSupabaseReady()) return [];
   const { data, error } = await supabase.from('resources').select('*');
   if (error) { console.error('[Supabase] getResources:', error); return []; }
-  return data;
+  return data || [];
 }
 
-async function saveResource(resource) {
+async function saveResources(resources) {
+  if (!isSupabaseReady()) return;
+  for (const res of resources) {
+    await supabase.from('resources').upsert({
+      id: String(res.id || res.num),
+      nom: res.nom,
+      description: res.description || res.desc || '',
+      lien: res.lien
+    });
+  }
+}
+
+/* ── TARIFICATION ──────────────────────────────────────────── */
+
+async function getPricingFromDB() {
   if (!isSupabaseReady()) return null;
-  const { data, error } = await supabase.from('resources').upsert(resource).select().single();
-  if (error) { console.error('[Supabase] saveResource:', error); return null; }
-  return data;
-}
-
-/* ── TARIFICATION ─────────────────────────────────────────── */
-
-async function getPricingFromSupabase() {
-  if (!isSupabaseReady()) return { prixNormal: 2000, promoActive: false, prixPromo: 2000, badgePromo: 'PROMO' };
   const { data, error } = await supabase.from('pricing').select('*').eq('id', 1).single();
-  if (error) { console.error('[Supabase] getPricing:', error); return { prixNormal: 2000, promoActive: false, prixPromo: 2000, badgePromo: 'PROMO' }; }
-  return {
-    prixNormal:  data.prix_normal,
+  if (error) { console.error('[Supabase] getPricing:', error); return null; }
+  if (data) return {
+    prixNormal: data.prix_normal,
     promoActive: data.promo_active,
-    prixPromo:   data.prix_promo,
-    badgePromo:  data.badge_promo,
+    prixPromo: data.prix_promo,
+    badgePromo: data.badge_promo
   };
+  return null;
 }
 
-async function savePricingToSupabase(pricing) {
+async function savePricingToDB(p) {
+  if (!isSupabaseReady()) return;
+  await supabase.from('pricing').update({
+    prix_normal: p.prixNormal,
+    promo_active: p.promoActive,
+    prix_promo: p.prixPromo,
+    badge_promo: p.badgePromo,
+    updated_at: new Date().toISOString()
+  }).eq('id', 1);
+}
+
+/* ── CAPTURES ──────────────────────────────────────────────── */
+
+async function getCaptures() {
+  if (!isSupabaseReady()) return [];
+  const { data, error } = await supabase.from('captures').select('*').order('date', { ascending: false });
+  if (error) { console.error('[Supabase] getCaptures:', error); return []; }
+  return data || [];
+}
+
+async function updateCaptureStatus(id, statut) {
   if (!isSupabaseReady()) return null;
-  const { data, error } = await supabase.from('pricing').update({
-    prix_normal:  pricing.prixNormal,
-    promo_active: pricing.promoActive,
-    prix_promo:   pricing.prixPromo,
-    badge_promo:  pricing.badgePromo,
-    updated_at:   new Date().toISOString(),
-  }).eq('id', 1).select().single();
-  if (error) { console.error('[Supabase] savePricing:', error); return null; }
+  const { data, error } = await supabase.from('captures').update({ statut }).eq('id', id).select().single();
+  if (error) { console.error('[Supabase] updateCaptureStatus:', error); return null; }
   return data;
 }
-
-/* ════════════════════════════════════════════════════════════
-   NOTE DE MIGRATION
-   ────────────────────────────────────────────────────────────
-   Les fonctions ci-dessus sont volontairement nommées de façon
-   proche des fonctions localStorage déjà présentes dans
-   index.html / admin.html (getUsers, getPricing, getResources,
-   getTestimonials...) afin de faciliter le remplacement :
-   il suffira de remplacer les appels synchrones existants par
-   leurs équivalents asynchrones (await) ci-dessus.
-   ════════════════════════════════════════════════════════════ */
