@@ -1747,8 +1747,11 @@
 
     /* ── Après paiement validé ── */
     async function onPaymentSuccess(paymentResult) {
+     try {
       const u = window._nlPendingUser || {};
       const montantPaye = getActivePrice();
+
+      alert('DEBUG: isSupabaseReady() = ' + isSupabaseReady() + ' | supabase = ' + (typeof supabase) + ' | URL = ' + (typeof SUPABASE_URL !== 'undefined' ? SUPABASE_URL : 'undefined'));
 
       if (isSupabaseReady()) {
         /* 1. Créer le compte via Supabase Auth (mot de passe géré en sécurité, jamais en clair) */
@@ -1832,6 +1835,12 @@
       document.getElementById('modal-step-2').style.display = 'none';
       document.getElementById('modal-step-3').style.display = '';
       setTimeout(() => { window.location.href = 'app.html'; }, 2000);
+     } catch (e) {
+       console.error('[Paiement] Erreur inattendue :', e);
+       alert('ERREUR DEBUG : ' + (e && e.message ? e.message : String(e)));
+       const btn = document.getElementById('pay-btn');
+       if (btn) { btn.disabled = false; btn.textContent = 'Réessayer le paiement'; }
+     }
     }
   renderHeroPrice();
   </script>
