@@ -1813,7 +1813,8 @@
 
         if (paymentError || !paymentRow) {
           console.error('[Paiement] Erreur enregistrement paiement :', paymentError);
-          alert("Le paiement a été reçu mais n'a pas pu être enregistré. Contactez le support avec votre email pour activation manuelle.");
+          const errMsg = paymentError ? (paymentError.message || paymentError.code || JSON.stringify(paymentError)) : 'paymentRow null';
+          alert("ERREUR PAIEMENT : " + errMsg);
           return;
         }
 
