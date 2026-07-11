@@ -284,7 +284,7 @@
         </div>
         <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:20px;">
           <span id="hero-price-crossed" style="display:none;font-size:1.15rem;font-weight:600;color:var(--text-tertiary);text-decoration:line-through;"></span>
-          <span id="hero-price-normal" style="font-size:2rem;font-weight:900;color:var(--text-primary);letter-spacing:-.04em;">2 000 FCFA</span>
+          <span id="hero-price-normal" style="font-size:2rem;font-weight:900;color:var(--text-primary);letter-spacing:-.04em;">1 500 FCFA</span>
           <span id="hero-price-promo-value" style="display:none;font-size:2rem;font-weight:900;color:var(--text-primary);letter-spacing:-.04em;"></span>
         </div>
         <div class="hero-cta hero-animate-cta">
@@ -1114,6 +1114,7 @@
   <script src="assets/js/animations.js"></script>
   <script src="assets/js/faq.js"></script>
   <script src="assets/js/geniuspay-client.js"></script>
+  <script src="assets/js/chariow-client.js"></script>
 
   <!-- ══════════════════════════════════════════════
        MODAL ACCÈS — TUNNEL COMPTE + PAIEMENT
@@ -1422,6 +1423,17 @@
             <input type="email" id="modal-email" class="form-input" placeholder="Écrivez votre adresse email" autocomplete="email" />
           </div>
 
+          <div class="modal-form-row">
+            <div style="max-width:110px;">
+              <label class="form-label" for="modal-indicatif">Indicatif</label>
+              <input type="text" id="modal-indicatif" class="form-input" placeholder="229" value="229" inputmode="numeric" />
+            </div>
+            <div>
+              <label class="form-label" for="modal-telephone">Téléphone</label>
+              <input type="tel" id="modal-telephone" class="form-input" placeholder="Écrivez votre numéro" autocomplete="tel" inputmode="tel" />
+            </div>
+          </div>
+
           <div>
             <label class="form-label" for="modal-password">Mot de passe</label>
             <input type="password" id="modal-password" class="form-input" placeholder="Créez votre mot de passe" autocomplete="new-password" style="letter-spacing:0.08em;" />
@@ -1477,7 +1489,7 @@
             <div style="width:44px;height:44px;background:#EFF6FF;border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
               <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" width="22" height="22"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
             </div>
-            <p style="font-size:.875rem;font-weight:700;color:#0F172A;margin-bottom:4px;">Paiement sécurisé via Genius Pay</p>
+            <p style="font-size:.875rem;font-weight:700;color:#0F172A;margin-bottom:4px;">Paiement sécurisé via Chariow</p>
             <p style="font-size:.8125rem;color:#64748B;">Mobile Money · Carte bancaire · Transfert</p>
           </div>
 
@@ -1487,7 +1499,7 @@
           </div>
 
           <!-- Bouton paiement -->
-          <button onclick="simulatePayment()" class="btn btn-primary btn-full" id="pay-btn">
+          <button onclick="payViaChariow()" class="btn btn-primary btn-full" id="pay-btn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
             Payer et accéder à Nouvora Labs
           </button>
@@ -1555,9 +1567,9 @@
     function getPricing() {
       try {
         return JSON.parse(localStorage.getItem(NL_PRICING_KEY)) || {
-          prixNormal: 2000, promoActive: false, prixPromo: 2000, badgePromo: 'PROMO'
+          prixNormal: 1500, promoActive: false, prixPromo: 1500, badgePromo: 'PROMO'
         };
-      } catch { return { prixNormal: 2000, promoActive: false, prixPromo: 2000, badgePromo: 'PROMO' }; }
+      } catch { return { prixNormal: 1500, promoActive: false, prixPromo: 1500, badgePromo: 'PROMO' }; }
     }
 
     function getActivePrice() {
@@ -1700,17 +1712,20 @@
     }
 
     function goToPayment() {
-      const prenom   = (document.getElementById('modal-prenom')   || {}).value?.trim();
-      const nom      = (document.getElementById('modal-nom')      || {}).value?.trim();
-      const email    = (document.getElementById('modal-email')    || {}).value?.trim();
-      const password = (document.getElementById('modal-password') || {}).value;
+      const prenom    = (document.getElementById('modal-prenom')    || {}).value?.trim();
+      const nom       = (document.getElementById('modal-nom')       || {}).value?.trim();
+      const email     = (document.getElementById('modal-email')     || {}).value?.trim();
+      const indicatif = (document.getElementById('modal-indicatif') || {}).value?.trim();
+      const telephone = (document.getElementById('modal-telephone') || {}).value?.trim();
+      const password  = (document.getElementById('modal-password')  || {}).value;
 
       if (!prenom || !nom) { document.getElementById('modal-prenom').focus(); return; }
       if (!email || !email.includes('@')) { document.getElementById('modal-email').focus(); return; }
+      if (!telephone || telephone.length < 6) { document.getElementById('modal-telephone').focus(); return; }
       if (!password || password.length < 6) { document.getElementById('modal-password').focus(); return; }
 
       /* Stocker temporairement les infos (Supabase prendra le relais) */
-      window._nlPendingUser = { prenom, nom, email, password };
+      window._nlPendingUser = { prenom, nom, email, telephone, indicatif: indicatif || '229', password };
 
       /* Afficher le montant dynamique depuis admin */
       const pricing = getPricing();
@@ -1734,23 +1749,57 @@
       document.getElementById('modal-step-2').style.display = '';
     }
 
-    /* ── Genius Pay : intégration préparée ── */
-    function simulatePayment() {
+    /* ── Chariow : paiement réel (temporaire, en attendant Genius Pay) ──
+       Contrairement à la simulation, le client quitte le site pour payer
+       sur la page Chariow. Le compte doit donc être créé AVANT la
+       redirection ; c'est le webhook chariow-webhook qui activera le
+       Premium une fois le paiement confirmé côté serveur. */
+    async function payViaChariow() {
       const btn = document.getElementById('pay-btn');
-      if (btn) { btn.disabled = true; btn.textContent = 'Traitement en cours…'; }
+      if (btn) { btn.disabled = true; btn.textContent = 'Préparation du paiement…'; }
 
-      const _activePrice = getActivePrice();
+      const u = window._nlPendingUser || {};
 
-      /* Genius Pay (réel si configuré, simulé sinon — voir assets/js/geniuspay-client.js) */
-      startGeniusPayment(
-        _activePrice,
-        window._nlPendingUser || {},
-        (result) => onPaymentSuccess(result),
-        (err) => {
-          console.error('[Paiement] Échec :', err);
-          if (btn) { btn.disabled = false; btn.textContent = 'Réessayer le paiement'; }
-        }
-      );
+      const account = await createOrSignInAccount(u);
+      if (!account.ok) {
+        alert(account.error || "Impossible de créer votre compte. Vérifiez vos informations.");
+        if (btn) { btn.disabled = false; btn.textContent = 'Réessayer'; }
+        return;
+      }
+
+      localStorage.setItem('nouvora_user_email', u.email || '');
+
+      startChariowPayment(u, (err) => {
+        console.error('[Chariow] Échec :', err);
+        alert(typeof err === 'string' ? err : 'Le paiement n\'a pas pu être lancé. Réessayez.');
+        if (btn) { btn.disabled = false; btn.textContent = 'Réessayer le paiement'; }
+      });
+      /* Pas de code après un succès : le navigateur quitte la page vers Chariow */
+    }
+
+    /* ── Crée le compte Supabase Auth (statut visiteur par défaut, activé
+       en premium plus tard par le webhook) ou se connecte s'il existe déjà ── */
+    async function createOrSignInAccount(u) {
+      if (!_getClient()) return { ok: true }; /* Mode hors-ligne : rien à faire ici */
+
+      let { data: authData, error: authError } = await _getClient().auth.signUp({
+        email: u.email,
+        password: u.password,
+        options: { data: { nom: u.nom || '', prenom: u.prenom || '' } }
+      });
+
+      if (authError && authError.message && authError.message.toLowerCase().includes('already')) {
+        const signInRes = await _getClient().auth.signInWithPassword({ email: u.email, password: u.password });
+        authData = signInRes.data;
+        authError = signInRes.error;
+      }
+
+      if (authError || !authData?.user) {
+        console.error('[Compte] Erreur création/connexion :', authError);
+        return { ok: false, error: authError?.message || 'Erreur lors de la création du compte.' };
+      }
+
+      return { ok: true, userId: authData.user.id };
     }
 
     /* ── Client Supabase — utilise window._sbClient de supabase-client.js ── */
